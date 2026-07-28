@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Backgrounds — pure blacks & greys ── */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0f0f0f;
+  --surface: #161616;
+  --surface-raised: #1c1c1c;
+  --surface-alt: #222222;
+
+  /* ── Borders ── */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-light: rgba(255, 255, 255, 0.04);
+  --border-mid: rgba(255, 255, 255, 0.11);
+
+  /* ── Text — whites & greys only ── */
+  --text-primary: #f2f2f2;
+  --text-secondary: #a0a0a0;
+  --text-muted: #525252;
+  --text-dim: #333333;
+
+  /* ── Accent — ONLY white/grey tones ── */
+  --accent-bright: #ffffff;
+  --accent-light: #d4d4d4;
+  --accent-mid: #8a8a8a;
+  --accent-dim: #404040;
+
+  /* ── Fonts ── */
+  --font-hand: 'Edu VIC WA NT Hand', cursive;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-hand);
+  line-height: 1.6;
+  word-spacing: 0.18em;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 99px;
+}
+
+/* Layers */
+.canvas-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.content-layer {
+  position: relative;
+  z-index: 10;
 }
