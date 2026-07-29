@@ -11,10 +11,20 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Scoring',      href: '#scoring' },
 ];
 
+function buildGithubAuthUrl(): string {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const callbackUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/auth/callback`
+    : '/auth/callback';
+  return `${apiUrl}/auth/github?return_to=${encodeURIComponent(callbackUrl)}`;
+}
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [authUrl, setAuthUrl] = useState('');
 
   useEffect(() => {
+    setAuthUrl(buildGithubAuthUrl());
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -100,7 +110,7 @@ export default function Navbar() {
         {/* ── CTA buttons ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <a
-            href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/auth/github`}
+            href={authUrl}
             style={{
               color: 'rgba(240,236,228,0.65)',
               textDecoration: 'none',
@@ -116,7 +126,7 @@ export default function Navbar() {
             Sign in
           </a>
           <a
-            href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/auth/github`}
+            href={authUrl}
             style={{
               background: 'linear-gradient(135deg, #201927ff 0%, #272623ff 100%)',
               color: '#fff',

@@ -2,6 +2,14 @@
 
 import { useEffect, useState } from 'react';
 
+function buildGithubAuthUrl(): string {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const callbackUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/auth/callback`
+    : '/auth/callback';
+  return `${apiUrl}/auth/github?return_to=${encodeURIComponent(callbackUrl)}`;
+}
+
 /* ────────────────────────────────────────────────
    Colour palette — warm, black-grey theme, no blue
 ──────────────────────────────────────────────── */
@@ -342,6 +350,12 @@ const HEADLINE_CHAR_COUNT = HEADLINE_WORDS.reduce((s, w) => s + w.text.length, 0
 const HEADLINE_DURATION   = HEADLINE_CHAR_COUNT * 35 + 300;
 
 export default function HeroSection() {
+  const [authUrl, setAuthUrl] = useState('');
+
+  useEffect(() => {
+    setAuthUrl(buildGithubAuthUrl());
+  }, []);
+
   return (
     <section
       id="hero"
@@ -394,7 +408,7 @@ export default function HeroSection() {
           animation: 'fadeUp 0.6s ease both', animationDelay: '0.4s',
         }}>
           <a
-            href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/auth/github`}
+            href={authUrl}
             style={{
               background: 'linear-gradient(135deg, #201927ff 0%, #272623ff 100%)',
               color: '#fff',
