@@ -39,8 +39,8 @@ export async function GET(request: NextRequest) {
     const cookieStore = await cookies();
     cookieStore.set('trumatch_token', token, {
       httpOnly: true,
-      secure: true,        // must be true for SameSite=None
-      sameSite: 'none',    // cross-origin: Vercel frontend → Render backend
+      secure: true,
+      sameSite: 'none',
       path: '/',
       maxAge: 7 * 24 * 60 * 60, // 7 days
     });

@@ -66,6 +66,28 @@ function PreparingContent() {
   useEffect(() => {
     if (!userId) return;
 
+    let active = true;
+
+    // 1. Initial status check to prevent race conditions (job completes too fast)
+    fetch('/api/github-sync')
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((data) => {
+        if (!active) return;
+        if (data.status === 'complete') {
+          completedRef.current = true;
+          router.push('/interview');
+        } else if (data.status === 'failed') {
+          completedRef.current = true;
+          setError(data.error ?? 'Something went wrong analysing your GitHub data.');
+        }
+      })
+      .catch(() => {
+        // Silently ignore — fallback to websocket
+      });
+
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
     const socket = io(`${backendUrl}/github-sync`, {
@@ -92,7 +114,10 @@ function PreparingContent() {
       // Silently tolerate — job still runs in background
     });
 
-    return () => { socket.disconnect(); };
+    return () => {
+      active = false;
+      socket.disconnect();
+    };
   }, [userId, router]);
 
   // ── Message carousel ─────────────────────────────────────────────────────
