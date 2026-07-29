@@ -86,3 +86,58 @@ export interface InterviewAnswerPayload {
   sessionId: string;
   answer: string;
 }
+
+/** Client → Server: complete event payload */
+export interface InterviewCompletePayload {
+  userId: string;
+  sessionId: string;
+}
+
+// ─── Dashboard data types ─────────────────────────────────────────────────────
+
+export interface CommitmentScoreData {
+  id: string;
+  userId: string;
+  githubScore: number;
+  interviewScore: number;
+  commitmentScore: number;
+  declaredHoursPerDay: number | null;
+  flaggedDiscrepancies: FlaggedDiscrepancy[];
+  communicationNotes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GithubMetricsData {
+  id: string;
+  userId: string;
+  status: string;
+  githubConsistencyScore: number | null;
+  repoBreakdown: RepoSignals[];
+  errorReason: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface InterviewAnalysis {
+  specificity_score: number;
+  declared_hours_per_day: number;
+  flagged_discrepancies: FlaggedDiscrepancy[];
+  communication_style_notes: string;
+}
+
+export interface InterviewSessionData {
+  id: string;
+  status: string;
+  structuredOutput: InterviewAnalysis | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DashboardData {
+  user: UserProfile | null;
+  commitmentScore: CommitmentScoreData | null;
+  githubMetrics: GithubMetricsData | null;
+  interviewSession: InterviewSessionData | null;
+}
+

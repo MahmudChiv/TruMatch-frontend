@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   description:
     "TruMatch uses AI-verified GitHub commitment scores to match hackathon developers by follow-through, not just skills. Stop getting ghosted mid-project.",
   keywords: ["hackathon", "developer matching", "commitment score", "team formation", "GitHub"],
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
   openGraph: {
     title: "TruMatch — Find Teammates Who Actually Deliver",
     description:
