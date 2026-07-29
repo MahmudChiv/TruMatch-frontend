@@ -153,10 +153,7 @@ function PreparingContent() {
             onClick={() => {
               setError(null);
               completedRef.current = false;
-              fetch(
-                `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/users/me/github-sync`,
-                { method: 'POST', credentials: 'include' },
-              ).catch(() => null);
+              fetch('/api/github-sync', { method: 'POST' }).catch(() => null);
             }}
           >
             Retry

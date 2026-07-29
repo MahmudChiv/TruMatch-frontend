@@ -45,9 +45,7 @@ export default function InterviewPage() {
 
   // ── 1. Fetch authenticated user profile ────────────────────────────────────
   useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-
-    fetch(`${backendUrl}/auth/me`, { credentials: 'include' })
+    fetch('/api/me')
       .then((res) => {
         if (!res.ok) throw new Error('Unauthorized');
         return res.json();
