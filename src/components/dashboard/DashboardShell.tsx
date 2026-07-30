@@ -174,7 +174,7 @@ export default function DashboardShell({ initialData }: Props) {
             marginBottom: '24px',
             alignItems: 'start',
           }}>
-            {/* Left Column (Wider ~1.6fr equivalent in responsive layout) */}
+            {/* Left Column: Commitment Score Gauge */}
             <div style={{
               display: 'flex',
               flexDirection: 'column',
@@ -182,18 +182,12 @@ export default function DashboardShell({ initialData }: Props) {
               minWidth: 0,
               flex: '1.6 1 0%',
             }}>
-              {/* Animated Arc Gauge / Commitment Score Card */}
               <section aria-label="Commitment Score Gauge">
                 <ScoreHeroCard commitmentScore={data.commitmentScore} isLoading={false} />
               </section>
-
-              {/* Score History Chart */}
-              <section aria-label="Score History Chart">
-                <ScoreHistoryChart commitmentScore={data.commitmentScore} isLoading={false} />
-              </section>
             </div>
 
-            {/* Right Column (Narrower ~1fr equivalent) */}
+            {/* Right Column: Interview Summary */}
             <div style={{
               display: 'flex',
               flexDirection: 'column',
@@ -201,12 +195,16 @@ export default function DashboardShell({ initialData }: Props) {
               minWidth: 0,
               flex: '1 1 0%',
             }}>
-              {/* Interview Summary Card (Summary + Flagged Discrepancies) */}
               <section aria-label="Interview Summary">
                 <InterviewSummaryCard interviewSession={data.interviewSession} isLoading={false} />
               </section>
             </div>
           </div>
+
+          {/* ── Full-Width Score History Chart ── */}
+          <section aria-label="Score History Chart" style={{ marginBottom: '24px' }}>
+            <ScoreHistoryChart commitmentScore={data.commitmentScore} isLoading={false} />
+          </section>
 
           {/* ── Full-Width GitHub Activity Table at Bottom ── */}
           <section aria-label="GitHub Activity Breakdown Table">
