@@ -11,7 +11,14 @@ interface Props {
   syncMessage?: string;
 }
 
-function Bar({ value, color }: { value: number; color: string }) {
+function Bar({ value, color }: { value: number | null; color: string }) {
+  if (value === null) {
+    return (
+      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+        N/A (0 activity)
+      </span>
+    );
+  }
   const pct = Math.min(Math.max(Math.round(value * 100), 0), 100);
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', maxWidth: '140px' }}>
@@ -24,7 +31,7 @@ function Bar({ value, color }: { value: number; color: string }) {
           transition: 'width 0.8s cubic-bezier(0.22, 1, 0.36, 1)',
         }} />
       </div>
-      <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', minWidth: '32px', textAlign: 'right' }}>
+      <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', minWidth: '30px', textAlign: 'right' }}>
         {pct}%
       </span>
     </div>

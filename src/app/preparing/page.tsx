@@ -19,6 +19,11 @@ const MESSAGES: Message[] = [
     sub: 'Connecting to GitHub and pulling your history…',
   },
   {
+    text: 'Reviewing public & private repos',
+    animation: 'typewriter',
+    sub: 'Both your public and private repository activity are reviewed to build your transparent Commitment Score.',
+  },
+  {
     text: 'We are honoured to have you',
     animation: 'fade-up',
     sub: 'Every line of code you wrote brought you here.',

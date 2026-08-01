@@ -36,6 +36,9 @@ export default function InterviewPage() {
 
   // Final outcome state
   const [finalResult, setFinalResult] = useState<InterviewCompleteEvent | null>(null);
+  const [isFinishedReady, setIsFinishedReady] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
+  const [isNavigatingToDashboard, setIsNavigatingToDashboard] = useState(false);
 
   // Socket, Auto-scroll & Focus refs
   const socketRef = useRef<Socket | null>(null);
@@ -67,6 +70,13 @@ export default function InterviewPage() {
         setSessionState('intro');
       });
   }, []);
+
+  // Prefetch dashboard when score is revealed
+  useEffect(() => {
+    if (sessionState === 'completed') {
+      router.prefetch('/dashboard');
+    }
+  }, [sessionState, router]);
 
   // ── 2. Initialize Socket Connection ─────────────────────────────────────────
   useEffect(() => {
@@ -128,11 +138,16 @@ export default function InterviewPage() {
         ];
       });
       setIsAiTyping(false);
+
+      if (data.isInterviewFinished) {
+        setIsFinishedReady(true);
+      }
     });
 
     // Handle full interview completion
     socket.on('interview:complete', (data: InterviewCompleteEvent) => {
       setIsAiTyping(false);
+      setIsFinishing(false);
       setFinalResult(data);
       setSessionState('completed');
     });
@@ -140,6 +155,7 @@ export default function InterviewPage() {
     // Handle interview error
     socket.on('interview:error', (data: InterviewErrorEvent) => {
       setIsAiTyping(false);
+      setIsFinishing(false);
       setErrorReason(data.reason || 'An error occurred during your interview.');
       setSessionState('error');
     });
@@ -208,6 +224,15 @@ export default function InterviewPage() {
       userId: user.id,
       sessionId: sessionId || 'active-session',
       answer: answerText,
+    });
+  };
+
+  const handleManualComplete = () => {
+    if (!socketRef.current || !user || isFinishing) return;
+    setIsFinishing(true);
+    socketRef.current.emit('interview:finish', {
+      userId: user.id,
+      sessionId: sessionId || 'active-session',
     });
   };
 
@@ -336,8 +361,22 @@ export default function InterviewPage() {
               </div>
             )}
 
-            <button className="iv-btn-primary" onClick={() => router.push('/dashboard')}>
-              Go to Dashboard
+            <button
+              className="iv-btn-primary"
+              disabled={isNavigatingToDashboard}
+              onClick={() => {
+                setIsNavigatingToDashboard(true);
+                router.push('/dashboard');
+              }}
+            >
+              {isNavigatingToDashboard ? (
+                <span className="iv-btn-loading">
+                  <span className="iv-spinner-inline" />
+                  Redirecting to Dashboard...
+                </span>
+              ) : (
+                'Go to Dashboard'
+              )}
             </button>
           </div>
         </main>
@@ -381,6 +420,10 @@ export default function InterviewPage() {
             </div>
 
             <div className="iv-info-list">
+              <div className="iv-info-item">
+                <span className="iv-info-dot" />
+                <span>Scans both your public and private GitHub repositories</span>
+              </div>
               <div className="iv-info-item">
                 <span className="iv-info-dot" />
                 <span>5 brief core topics + tailored follow-ups</span>
@@ -466,32 +509,53 @@ export default function InterviewPage() {
         </div>
       </main>
 
-      {/* Input Bar */}
+      {/* Input Bar / Finish Button */}
       <footer className="iv-chat-footer">
-        <div className="iv-input-container">
-          <textarea
-            ref={textareaRef}
-            autoFocus
-            className="iv-textarea"
-            placeholder="Type your response here… (Press Enter to send)"
-            value={currentAnswer}
-            onChange={(e) => setCurrentAnswer(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isAiTyping}
-            rows={1}
-          />
-          <button
-            className="iv-send-btn"
-            onClick={handleSendAnswer}
-            disabled={!currentAnswer.trim() || isAiTyping}
-            aria-label="Send response"
-          >
-            <svg viewBox="0 0 24 24" fill="none" className="iv-send-icon">
-              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        </div>
-        <p className="iv-footer-note">Press Shift + Enter for new lines. Answers are persisted in real-time.</p>
+        {isFinishedReady ? (
+          <div className="iv-finished-container">
+            <button
+              className="iv-btn-primary iv-finish-btn"
+              onClick={handleManualComplete}
+              disabled={isFinishing}
+            >
+              {isFinishing ? (
+                <span className="iv-btn-loading">
+                  <span className="iv-spinner-inline" />
+                  Evaluating responses & generating score...
+                </span>
+              ) : (
+                'Complete Interview & View Score →'
+              )}
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="iv-input-container">
+              <textarea
+                ref={textareaRef}
+                autoFocus
+                className="iv-textarea"
+                placeholder="Type your response here… (Press Enter to send)"
+                value={currentAnswer}
+                onChange={(e) => setCurrentAnswer(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={isAiTyping}
+                rows={1}
+              />
+              <button
+                className="iv-send-btn"
+                onClick={handleSendAnswer}
+                disabled={!currentAnswer.trim() || isAiTyping}
+                aria-label="Send response"
+              >
+                <svg viewBox="0 0 24 24" fill="none" className="iv-send-icon">
+                  <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+            <p className="iv-footer-note">Press Shift + Enter for new lines. Answers are persisted in real-time.</p>
+          </>
+        )}
       </footer>
 
       <style>{styles}</style>
@@ -951,4 +1015,30 @@ const styles = `
   }
   @keyframes iv-spin { to { transform: rotate(360deg); } }
   .iv-loader-text { font-size: 0.9rem; color: var(--text-secondary, #a0a0a0); }
+
+  .iv-btn-loading {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+  .iv-spinner-inline {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: iv-spin 0.8s linear infinite;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .iv-finished-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .iv-finish-btn {
+    width: 100%;
+    margin-top: 0;
+  }
 `;

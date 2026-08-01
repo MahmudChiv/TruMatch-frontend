@@ -41,9 +41,10 @@ export interface RepoSignals {
   name: string;
   fullName: string;
   commitGapConsistency: number;
-  prMergeRatio: number;
-  issueCloseRatio: number;
+  prMergeRatio: number | null;
+  issueCloseRatio: number | null;
   completionSignal: number;
+  isCollaborative: boolean;
   repoScore: number;
   totalCommits: number;
 }
@@ -67,6 +68,7 @@ export interface InterviewMessageCompleteEvent {
   sessionId: string;
   fullText: string;
   turnIndex: number;
+  isInterviewFinished?: boolean;
 }
 
 /** A single discrepancy flagged between self-report and GitHub data */

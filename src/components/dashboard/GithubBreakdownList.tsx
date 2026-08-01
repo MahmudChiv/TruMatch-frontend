@@ -8,7 +8,16 @@ interface Props {
   isLoading: boolean;
 }
 
-function Bar({ value, color }: { value: number; color: string }) {
+function Bar({ value, color }: { value: number | null; color: string }) {
+  if (value === null) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+          N/A (0 activity)
+        </span>
+      </div>
+    );
+  }
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
       <div style={{
