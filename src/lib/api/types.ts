@@ -13,6 +13,8 @@ export interface UserProfile {
   avatarUrl?: string | null;
   bio?: string | null;
   contextNote?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   commitmentScore: number;
   createdAt: string;
   updatedAt: string;
@@ -239,3 +241,100 @@ export const WARNING_TEXTS = {
     'project, the team will have the opportunity to rate one another, which will add a ' +
     'peer-confirmed dimension to everyone\'s score.',
 } as const;
+
+// ─── Hackathons & Admin types ──────────────────────────────────────────────────
+
+export type VenueType = 'physical' | 'virtual' | 'hybrid';
+export type HackathonStatus = 'pending' | 'verified' | 'flagged';
+export type DistanceTier = 'same_city' | 'same_country' | 'elsewhere';
+
+export interface HackathonSummary {
+  id: string;
+  title: string;
+  logoUrl: string | null;
+  description: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  submissionDeadline: string | null;
+  venueType: VenueType;
+  locationLabel: string | null;
+  externalUrl: string;
+  prizeInfo: string | null;
+  tags: string[];
+  status: HackathonStatus;
+  submittedBy: { username: string; avatarUrl: string | null };
+  joinCount: number;
+  vouchCount: number;
+  hasJoined: boolean;
+  hasVouched: boolean;
+  distance: number | null;
+  distanceTier: DistanceTier;
+  createdAt: string;
+}
+
+export interface ParticipantUser {
+  id: string;
+  username: string;
+  name: string | null;
+  avatarUrl: string | null;
+  commitmentScore: number;
+}
+
+export interface HackathonDetail extends HackathonSummary {
+  latitude: number | null;
+  longitude: number | null;
+  participants: ParticipantUser[];
+}
+
+export interface OgScrapeResult {
+  title: string | null;
+  description: string | null;
+  logoUrl: string | null;
+  siteName: string | null;
+  duplicate: HackathonSummary | null;
+}
+
+export interface CreateHackathonDto {
+  title: string;
+  externalUrl: string;
+  logoUrl?: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
+  submissionDeadline?: string;
+  venueType?: VenueType;
+  locationLabel?: string;
+  latitude?: number;
+  longitude?: number;
+  prizeInfo?: string;
+  tags?: string[];
+}
+
+export interface AdminQueueItem {
+  id: string;
+  title: string;
+  logoUrl: string | null;
+  description: string | null;
+  externalUrl: string;
+  status: HackathonStatus;
+  venueType: VenueType;
+  locationLabel: string | null;
+  createdAt: string;
+  submitter: {
+    id: string;
+    username: string;
+    email: string | null;
+    avatarUrl: string | null;
+  };
+  reports: Array<{
+    reason: string;
+    createdAt: string;
+    user: { username: string };
+  }>;
+  _count: {
+    vouches: number;
+    reports: number;
+    joins: number;
+  };
+}
+

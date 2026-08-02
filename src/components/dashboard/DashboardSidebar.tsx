@@ -1,9 +1,16 @@
 'use client';
 
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import type { UserProfile } from '@/lib/api/types';
 
 /* ── SVG Icon components ──────────────────────────────────────────────────── */
+
+const IconShield = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
 
 const IconGrid = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -65,19 +72,25 @@ interface Props {
   onToggle: () => void;
 }
 
-const NAV_ITEMS = [
-  { id: 'overview', label: 'Overview', icon: <IconGrid />, active: true, href: '/dashboard' },
-  { id: 'team-matching', label: 'Team Matching', icon: <IconUsers />, active: false, href: '#' },
-  { id: 'ratings', label: 'Ratings', icon: <IconStar />, active: false, href: '#' },
-  { id: 'settings', label: 'Settings', icon: <IconSettingsGear />, active: false, href: '#' },
-] as const;
-
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const DUR = '0.28s';
 
 /* ── Component ────────────────────────────────────────────────────────────── */
 
 export default function DashboardSidebar({ user: _user, collapsed, onToggle }: Props) {
+  const pathname = usePathname();
+
+  const navItems = [
+    { id: 'overview', label: 'Overview', icon: <IconGrid />, href: '/dashboard' },
+    { id: 'hackathons', label: 'Hackathons & Teams', icon: <IconUsers />, href: '/hackathons' },
+    { id: 'ratings', label: 'Ratings', icon: <IconStar />, href: '#' },
+    { id: 'settings', label: 'Settings', icon: <IconSettingsGear />, href: '#' },
+  ];
+
+  if (_user.email && ['mahmud.adegboyega@gmail.com'].includes(_user.email.toLowerCase())) {
+    navItems.push({ id: 'admin', label: 'Admin Queue', icon: <IconShield />, href: '/admin' });
+  }
+
   return (
     <aside
       className="dash-sidebar"
@@ -232,55 +245,62 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle }: P
         style={{ flex: 1, padding: '8px 0', overflowY: 'auto', overflowX: 'hidden' }}
         aria-label="Sidebar navigation"
       >
-        {NAV_ITEMS.map(item => (
-          <a
-            key={item.id}
-            href={item.href}
-            title={collapsed ? item.label : undefined}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              margin: '2px 8px',
-              padding: '10px 12px',
-              borderRadius: '10px',
-              textDecoration: 'none',
-              color: item.active ? 'var(--text-primary)' : 'var(--text-secondary)',
-              background: item.active ? 'rgba(167,139,250,0.1)' : 'transparent',
-              border: item.active ? '1px solid rgba(167,139,250,0.15)' : '1px solid transparent',
-              fontSize: '0.875rem',
-              fontWeight: item.active ? 600 : 400,
-              transition: 'background 0.15s, color 0.15s',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              justifyContent: collapsed ? 'center' : 'flex-start',
-            }}
-            onMouseEnter={e => {
-              if (!item.active) {
-                const a = e.currentTarget as HTMLAnchorElement;
-                a.style.background = 'rgba(255,255,255,0.04)';
-                a.style.color = 'var(--text-primary)';
-              }
-            }}
-            onMouseLeave={e => {
-              if (!item.active) {
-                const a = e.currentTarget as HTMLAnchorElement;
-                a.style.background = 'transparent';
-                a.style.color = 'var(--text-secondary)';
-              }
-            }}
-          >
-            {/* Icon */}
-            <span style={{
-              color: item.active ? '#a78bfa' : 'inherit',
-              flexShrink: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '20px',
-            }}>
-              {item.icon}
-            </span>
+        {navItems.map((item) => {
+          const isActive =
+            pathname === item.href ||
+            (item.href !== '/dashboard' && item.href !== '#' && pathname.startsWith(item.href));
+
+          return (
+            <a
+              key={item.id}
+              href={item.href}
+              title={collapsed ? item.label : undefined}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                margin: '2px 8px',
+                padding: '10px 12px',
+                borderRadius: '10px',
+                textDecoration: 'none',
+                color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                background: isActive ? 'rgba(167,139,250,0.1)' : 'transparent',
+                border: isActive ? '1px solid rgba(167,139,250,0.15)' : '1px solid transparent',
+                fontSize: '0.875rem',
+                fontWeight: isActive ? 600 : 400,
+                transition: 'background 0.15s, color 0.15s',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                justifyContent: collapsed ? 'center' : 'flex-start',
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  const a = e.currentTarget as HTMLAnchorElement;
+                  a.style.background = 'rgba(255,255,255,0.04)';
+                  a.style.color = 'var(--text-primary)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  const a = e.currentTarget as HTMLAnchorElement;
+                  a.style.background = 'transparent';
+                  a.style.color = 'var(--text-secondary)';
+                }
+              }}
+            >
+              {/* Icon */}
+              <span
+                style={{
+                  color: isActive ? '#a78bfa' : 'inherit',
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '20px',
+                }}
+              >
+                {item.icon}
+              </span>
 
             {/* Label — animates out when collapsed */}
             <span style={{
@@ -293,7 +313,8 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle }: P
               {item.label}
             </span>
           </a>
-        ))}
+        );
+      })}
       </nav>
 
       {/* ── Bottom: divider + logout ── */}
