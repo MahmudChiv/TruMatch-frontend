@@ -23,6 +23,8 @@ export default function HackathonCard({
   const [reportReason, setReportReason] = useState('');
   const [isReporting, setIsReporting] = useState(false);
   const [imageError, setImageError] = useState(false);
+  /** Controls the expanded detail view — toggled by clicking the card header area */
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleJoinClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -73,6 +75,8 @@ export default function HackathonCard({
 
   const startDate = formatDate(hackathon.startDate);
   const endDate = formatDate(hackathon.endDate);
+  const appDeadline = formatDate(hackathon.applicationDeadline ?? null);
+  const subDeadline = formatDate(hackathon.submissionDeadline ?? null);
 
   return (
     <>
@@ -86,14 +90,18 @@ export default function HackathonCard({
           flexDirection: 'column',
           justifyContent: 'space-between',
           gap: '16px',
-          transition: 'border-color 0.2s, transform 0.15s',
+          transition: 'border-color 0.2s',
           position: 'relative',
         }}
         className="hackathon-card"
       >
-        {/* Header row: Logo + Status Badge + Venue badge */}
+        {/* Header row: Logo + Status Badge + Venue badge — clicking title area toggles expanded detail view */}
         <div>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '12px' }}>
+          <div
+            style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '12px', cursor: 'pointer' }}
+            onClick={() => setIsExpanded((v) => !v)}
+            title={isExpanded ? 'Click to collapse' : 'Click to expand details'}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div
                 style={{
@@ -202,8 +210,8 @@ export default function HackathonCard({
             </div>
           </div>
 
-          {/* Description */}
-          {hackathon.description && (
+          {/* Collapsed preview: short description + date (2-line clamp) */}
+          {!isExpanded && hackathon.description && (
             <p
               style={{
                 fontSize: '0.84rem',
@@ -220,14 +228,113 @@ export default function HackathonCard({
             </p>
           )}
 
-          {/* Date info */}
-          {(startDate || endDate) && (
+          {/* Collapsed date summary */}
+          {!isExpanded && (startDate || endDate) && (
             <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', margin: '6px 0' }}>
               🗓️ {startDate} {endDate ? `– ${endDate}` : ''}
             </div>
           )}
 
-          {/* Tags */}
+          {/* ── EXPANDED DETAIL VIEW ── */}
+          {isExpanded && (
+            <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+              {/* 1. Full Description (prefer fullDescription, fallback to shortDescription/description) */}
+              {(hackathon.fullDescription || hackathon.shortDescription || hackathon.description) && (
+                <div>
+                  <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.55, margin: 0 }}>
+                    {hackathon.fullDescription || hackathon.shortDescription || hackathon.description}
+                  </p>
+                </div>
+              )}
+
+              {/* 2. Eligibility & Team Size */}
+              {(hackathon.eligibility || hackathon.teamSize) && (
+                <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                  {hackathon.eligibility && (
+                    <div>
+                      <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Eligibility</div>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>{hackathon.eligibility}</div>
+                    </div>
+                  )}
+                  {hackathon.teamSize && (
+                    <div>
+                      <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Team Size</div>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>{hackathon.teamSize}</div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 3. Dates — only show date rows that have data */}
+              {(startDate || endDate || appDeadline || subDeadline) && (
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  {(startDate || endDate) && (
+                    <div>
+                      <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Event Dates</div>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>
+                        🗓️ {startDate}{endDate && startDate !== endDate ? ` – ${endDate}` : ''}
+                      </div>
+                    </div>
+                  )}
+                  {appDeadline && (
+                    <div>
+                      <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Apply By</div>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>⏰ {appDeadline}</div>
+                    </div>
+                  )}
+                  {subDeadline && (
+                    <div>
+                      <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Submit By</div>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>📬 {subDeadline}</div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 4. Prize info */}
+              {(hackathon.prizePoolTotal || hackathon.prizeInfo) && (
+                <div>
+                  <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>🏆 Prize</div>
+                  {hackathon.prizePoolTotal && (
+                    <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>{hackathon.prizePoolTotal}</div>
+                  )}
+                  {hackathon.prizeBreakdown && Array.isArray(hackathon.prizeBreakdown) && (hackathon.prizeBreakdown as Array<{place: string; prize: string}>).length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {(hackathon.prizeBreakdown as Array<{place: string; prize: string}>).map((p, i) => (
+                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                          <span style={{ color: 'var(--text-secondary)' }}>{p.place}</span>
+                          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{p.prize}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {!hackathon.prizePoolTotal && hackathon.prizeInfo && (
+                    <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{hackathon.prizeInfo}</div>
+                  )}
+                </div>
+              )}
+
+              {/* 5. External link — shows 'Website not yet available' if null */}
+              <div>
+                {hackathon.externalUrl ? (
+                  <a
+                    href={hackathon.externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    style={{ fontSize: '0.82rem', color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none', padding: '7px 14px', borderRadius: '8px', border: '1px solid var(--border-mid)', display: 'inline-block' }}
+                  >
+                    🔗 Open Event Page ↗
+                  </a>
+                ) : (
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Website not yet available</span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Tags — always shown (collapsed and expanded) */}
           {hackathon.tags && hackathon.tags.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '10px' }}>
               {hackathon.tags.map((tag, idx) => (
@@ -247,6 +354,14 @@ export default function HackathonCard({
               ))}
             </div>
           )}
+
+          {/* Expand/collapse toggle hint */}
+          <button
+            onClick={() => setIsExpanded((v) => !v)}
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '0.72rem', cursor: 'pointer', padding: '4px 0 0', textAlign: 'left' }}
+          >
+            {isExpanded ? '▴ Collapse' : '▾ Show details'}
+          </button>
         </div>
 
         {/* Footer row: Social proof + Action Buttons */}
@@ -260,27 +375,30 @@ export default function HackathonCard({
             gap: '12px',
           }}
         >
-          {/* Join Count + External Link */}
+          {/* Join Count + External Link (collapsed footer only) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
               👥 {hackathon.joinCount} joined
             </span>
 
-            <a
-              href={hackathon.externalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                fontSize: '0.78rem',
-                color: 'var(--text-primary)',
-                textDecoration: 'none',
-                opacity: 0.8,
-              }}
-              title="Open event page"
-            >
-              🔗 Details ↗
-            </a>
+            {/* Show external link in footer only when collapsed (expanded view has its own link) */}
+            {!isExpanded && hackathon.externalUrl && (
+              <a
+                href={hackathon.externalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  fontSize: '0.78rem',
+                  color: 'var(--text-primary)',
+                  textDecoration: 'none',
+                  opacity: 0.8,
+                }}
+                title="Open event page"
+              >
+                🔗 Details ↗
+              </a>
+            )}
           </div>
 
           {/* Action buttons */}

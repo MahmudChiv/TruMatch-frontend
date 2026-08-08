@@ -189,23 +189,29 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
 
               {/* Top CTA */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <a
-                  href={hackathon.externalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    padding: '10px 18px',
-                    borderRadius: '10px',
-                    background: 'var(--surface-raised)',
-                    border: '1px solid var(--border)',
-                    color: 'var(--text-primary)',
-                    textDecoration: 'none',
-                    fontWeight: 600,
-                    fontSize: '0.85rem',
-                  }}
-                >
-                  Register on Official Site ↗
-                </a>
+                {hackathon.externalUrl ? (
+                  <a
+                    href={hackathon.externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '10px 18px',
+                      borderRadius: '10px',
+                      background: 'var(--surface-raised)',
+                      border: '1px solid var(--border)',
+                      color: 'var(--text-primary)',
+                      textDecoration: 'none',
+                      fontWeight: 600,
+                      fontSize: '0.85rem',
+                    }}
+                  >
+                    Register on Official Site ↗
+                  </a>
+                ) : (
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                    Website not yet available
+                  </span>
+                )}
 
                 <button
                   onClick={handleJoinToggle}

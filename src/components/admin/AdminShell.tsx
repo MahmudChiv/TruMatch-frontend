@@ -154,14 +154,20 @@ export default function AdminShell({ user, initialQueue }: Props) {
                         </span>
                       </div>
 
-                      <a
-                        href={item.externalUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textDecoration: 'none' }}
-                      >
-                        🔗 {item.externalUrl} ↗
-                      </a>
+                      {item.externalUrl ? (
+                        <a
+                          href={item.externalUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textDecoration: 'none' }}
+                        >
+                          🔗 {item.externalUrl} ↗
+                        </a>
+                      ) : (
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                          No external link
+                        </span>
+                      )}
                     </div>
 
                     {/* Action buttons */}

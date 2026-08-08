@@ -247,18 +247,74 @@ export const WARNING_TEXTS = {
 export type VenueType = 'physical' | 'virtual' | 'hybrid';
 export type HackathonStatus = 'pending' | 'verified' | 'flagged';
 export type DistanceTier = 'same_city' | 'same_country' | 'elsewhere';
+export type ExtractionSource = 'url' | 'image' | 'manual';
+
+/** AI-structured extraction result returned by Path A (URL) and Path B (image/text) endpoints */
+export interface ExtractionResult {
+  title: string | null;
+  shortDescription: string | null;
+  fullDescription: string | null;
+  eligibility: string | null;
+  teamSize: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  applicationDeadline: string | null;
+  submissionDeadline: string | null;
+  locationLabel: string | null;
+  venueType: VenueType | null;
+  prizePoolTotal: string | null;
+  prizeBreakdown: Array<{ place: string; prize: string }> | null;
+  tags: string[] | null;
+  externalUrl: string | null;
+  /** Field names the model extracted but with low certainty — flagged with ⚠ in the review form */
+  low_confidence_fields: string[];
+}
+
+/** Response from POST /hackathons/scrape (Path A) */
+export interface OgScrapeResult {
+  title: string | null;
+  description: string | null;
+  logoUrl: string | null;
+  siteName: string | null;
+  /** Full structured extraction result from Gemini */
+  extracted: ExtractionResult | null;
+  /** Visible page text snapshot — passed back to POST /hackathons as rawSourceText */
+  rawSourceText: string | null;
+  /** Duplicate match if found */
+  duplicate: HackathonSummary | null;
+}
+
+/** Response from POST /hackathons/extract-image (Path B) */
+export interface ImageExtractionResult {
+  extracted: ExtractionResult | null;
+  /** OCR text transcript or pasted text snapshot — passed back to POST /hackathons as rawSourceText */
+  rawSourceText: string | null;
+  /** Supabase Storage path for the uploaded flyer — passed back to POST /hackathons as imageUrl */
+  imageStoragePath: string | null;
+  /** Fields the model extracted with low certainty */
+  lowConfidenceFields: string[];
+}
 
 export interface HackathonSummary {
   id: string;
   title: string;
   logoUrl: string | null;
+  /** Merged description: shortDescription takes priority over legacy description */
   description: string | null;
+  shortDescription: string | null;
+  fullDescription: string | null;
+  eligibility: string | null;
+  teamSize: string | null;
+  prizePoolTotal: string | null;
+  prizeBreakdown: Array<{ place: string; prize: string }> | null;
+  applicationDeadline: string | null;
   startDate: string | null;
   endDate: string | null;
   submissionDeadline: string | null;
   venueType: VenueType;
   locationLabel: string | null;
-  externalUrl: string;
+  /** Nullable: image submissions may not have a registration URL yet */
+  externalUrl: string | null;
   prizeInfo: string | null;
   tags: string[];
   status: HackathonStatus;
@@ -286,28 +342,40 @@ export interface HackathonDetail extends HackathonSummary {
   participants: ParticipantUser[];
 }
 
-export interface OgScrapeResult {
-  title: string | null;
-  description: string | null;
-  logoUrl: string | null;
-  siteName: string | null;
-  duplicate: HackathonSummary | null;
-}
-
-export interface CreateHackathonDto {
+export interface CreateHackathonPayload {
+  // ── Required
   title: string;
-  externalUrl: string;
+  // ── Source tracking
+  extractionSource?: ExtractionSource;
+  // ── Event identity
+  externalUrl?: string;
   logoUrl?: string;
+  // ── Descriptions
   description?: string;
+  shortDescription?: string;
+  fullDescription?: string;
+  // ── AI-extracted details
+  eligibility?: string;
+  teamSize?: string;
+  // ── Prize
+  prizePoolTotal?: string;
+  prizeBreakdown?: Array<{ place: string; prize: string }>;
+  prizeInfo?: string;
+  // ── Dates
   startDate?: string;
   endDate?: string;
   submissionDeadline?: string;
+  applicationDeadline?: string;
+  // ── Location
   venueType?: VenueType;
   locationLabel?: string;
   latitude?: number;
   longitude?: number;
-  prizeInfo?: string;
+  // ── Taxonomy
   tags?: string[];
+  // ── Admin-only (passed through from extraction response, stored server-side, never returned to public)
+  rawSourceText?: string;
+  imageUrl?: string;
 }
 
 export interface AdminQueueItem {
@@ -315,7 +383,7 @@ export interface AdminQueueItem {
   title: string;
   logoUrl: string | null;
   description: string | null;
-  externalUrl: string;
+  externalUrl: string | null;
   status: HackathonStatus;
   venueType: VenueType;
   locationLabel: string | null;
@@ -337,4 +405,18 @@ export interface AdminQueueItem {
     joins: number;
   };
 }
+
+/** Admin-only: source material for reviewing a pending/flagged listing */
+export interface AdminSourceResult {
+  id: string;
+  title: string;
+  rawSourceText: string | null;
+  imageUrl: string | null;
+  extractionSource: ExtractionSource;
+  externalUrl: string | null;
+  status: HackathonStatus;
+  createdAt: string;
+  submitter: { username: string; email: string | null };
+}
+
 
