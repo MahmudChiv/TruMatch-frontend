@@ -84,7 +84,7 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle }: P
     { id: 'overview', label: 'Overview', icon: <IconGrid />, href: '/dashboard' },
     { id: 'hackathons', label: 'Hackathons & Teams', icon: <IconUsers />, href: '/hackathons' },
     { id: 'ratings', label: 'Ratings', icon: <IconStar />, href: '#' },
-    { id: 'settings', label: 'Settings', icon: <IconSettingsGear />, href: '#' },
+    { id: 'settings', label: 'Settings', icon: <IconSettingsGear />, href: '/dashboard/settings' },
   ];
 
   if (_user.email && ['mahmud.adegboyega@gmail.com'].includes(_user.email.toLowerCase())) {

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import type { HackathonDetail, UserProfile } from '@/lib/api/types';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import FindTeammatesModal from '@/components/hackathons/FindTeammatesModal';
 
 interface Props {
   user: UserProfile;
@@ -16,6 +17,7 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [showMatchingModal, setShowMatchingModal] = useState(false);
 
   const handleJoinToggle = async () => {
     setIsJoining(true);
@@ -229,8 +231,35 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
                 >
                   {hackathon.hasJoined ? 'Joined Pool ✓' : isJoining ? '…' : 'Join Event Pool'}
                 </button>
+
+                {hackathon.hasJoined && (
+                  <button
+                    onClick={() => setShowMatchingModal(true)}
+                    style={{
+                      padding: '10px 22px',
+                      borderRadius: '10px',
+                      background: 'linear-gradient(135deg, #7c3aed, #c084fc)',
+                      border: 'none',
+                      color: '#ffffff',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 14px rgba(124, 58, 237, 0.3)',
+                    }}
+                  >
+                    🤖 Find Teammates
+                  </button>
+                )}
               </div>
             </div>
+
+            {showMatchingModal && (
+              <FindTeammatesModal
+                hackathonId={hackathon.id}
+                hackathonTitle={hackathon.title}
+                onClose={() => setShowMatchingModal(false)}
+              />
+            )}
 
             {/* Event Overview / Description */}
             {hackathon.description && (

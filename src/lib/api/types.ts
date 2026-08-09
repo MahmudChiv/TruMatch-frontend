@@ -13,6 +13,8 @@ export interface UserProfile {
   avatarUrl?: string | null;
   bio?: string | null;
   contextNote?: string | null;
+  roleTags?: string[];
+  primaryStack?: string | null;
   latitude?: number | null;
   longitude?: number | null;
   commitmentScore: number;
@@ -202,6 +204,8 @@ export interface PublicProfile {
   bio: string | null;
   bioSummary: string | null;
   contextNote: string | null;
+  roleTags?: string[];
+  primaryStack?: string | null;
   commitmentScore: {
     score: number;
     githubScore: number;
@@ -218,6 +222,76 @@ export interface PublicProfile {
 export interface UpdateProfileDto {
   contextNote?: string | null;
   bio?: string | null;
+  roleTags?: string[];
+  primaryStack?: string | null;
+}
+
+// ─── Team Matching & Team Charter types ───────────────────────────────────────
+
+export interface TeamCharter {
+  visionStatement: string;
+  roleComplementarity: string;
+  availabilityAgreement: string;
+  communicationProtocol: string;
+  commitmentPromise: string;
+}
+
+export interface CandidateMatchResult {
+  user: {
+    id: string;
+    username: string;
+    name: string | null;
+    avatarUrl: string | null;
+    bio: string | null;
+    roleTags: string[];
+    primaryStack: string | null;
+    commitmentScore: number;
+    declaredHoursPerDay: number | null;
+    githubConfidence: string;
+  };
+  matchReason: string;
+  compatibilityScore: number;
+  teamCharter: TeamCharter;
+}
+
+export interface FindTeammatesResponse {
+  candidates: CandidateMatchResult[];
+  targetSize: number;
+  myTeam: any | null;
+}
+
+export interface TeamInviteItem {
+  id: string;
+  hackathonId: string;
+  fromUserId: string;
+  toUserId: string;
+  teamId: string | null;
+  charterJson: TeamCharter | null;
+  status: 'pending' | 'accepted' | 'declined';
+  createdAt: string;
+  fromUser?: {
+    id: string;
+    username: string;
+    name: string | null;
+    avatarUrl: string | null;
+    roleTags: string[];
+    primaryStack: string | null;
+    commitmentScore: number;
+  };
+  toUser?: {
+    id: string;
+    username: string;
+    name: string | null;
+    avatarUrl: string | null;
+    roleTags: string[];
+    primaryStack: string | null;
+    commitmentScore: number;
+  };
+  hackathon?: {
+    id: string;
+    title: string;
+    logoUrl: string | null;
+  };
 }
 
 // ─── Warning texts (mirrored from backend for client-side rendering) ──────────

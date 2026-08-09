@@ -5,9 +5,11 @@ import type { UserProfile } from '@/lib/api/types';
 
 interface Props {
   user: UserProfile;
+  title?: string;
+  subtitle?: string;
 }
 
-export default function DashboardHeader({ user }: Props) {
+export default function DashboardHeader({ user, title, subtitle }: Props) {
   const avatarInitials = (user.name || user.username).slice(0, 2).toUpperCase();
 
   return (
@@ -28,14 +30,14 @@ export default function DashboardHeader({ user }: Props) {
           margin: 0,
           letterSpacing: '-0.02em',
         }}>
-          Dashboard Overview
+          {title || 'Dashboard Overview'}
         </h1>
         <p style={{
           margin: '4px 0 0',
           fontSize: '0.82rem',
           color: 'var(--text-muted)',
         }}>
-          Monitor commitment metrics, GitHub signals, and AI interview summary.
+          {subtitle || 'Monitor commitment metrics, GitHub signals, and AI interview summary.'}
         </p>
       </div>
 
