@@ -121,12 +121,13 @@ function AnimatedSubtitle({ delay }: { delay: number }) {
         fontSize: 'clamp(1rem, 2vw, 1.15rem)',
         color: 'rgba(240,236,228,0.65)',
         maxWidth: '660px',
+        width: '100%',
         margin: '0 auto',
         textAlign: 'center',
         lineHeight: 1.75,
         opacity: visible ? 1 : 0,
         transition: 'opacity 0.5s ease',
-        minHeight: '4em',
+        minHeight: 'auto',
         fontFamily: 'var(--font-edu-hand), cursive',
       }}
     >
@@ -451,7 +452,7 @@ export default function HeroSection() {
 
         {/* Social proof strip */}
         <div style={{
-          display: 'flex', alignItems: 'center', gap: '20px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '12px 20px',
           fontSize: '0.8rem', color: 'rgba(200,196,190,0.45)',
           animation: 'fadeUp 0.6s ease both', animationDelay: '0.6s',
           fontFamily: 'var(--font-edu-hand), cursive',

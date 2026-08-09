@@ -22,6 +22,7 @@ const AVAILABLE_ROLE_TAGS = [
 export default function SettingsShell({ initialUser }: Props) {
   const [user, setUser] = useState<UserProfile>(initialUser);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Profile form state
   const [bio, setBio] = useState(initialUser.bio || '');
@@ -107,13 +108,23 @@ export default function SettingsShell({ initialUser }: Props) {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .settings-main-container { margin-left: 0 !important; }
+          .settings-main-content { padding: 16px 16px 36px !important; }
+        }
+      `}</style>
+
       <DashboardSidebar
         user={user}
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed((prev) => !prev)}
+        mobileOpen={mobileSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
       />
 
       <div
+        className="settings-main-container"
         style={{
           marginLeft: sidebarWidth,
           transition: 'margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -122,9 +133,14 @@ export default function SettingsShell({ initialUser }: Props) {
           flexDirection: 'column',
         }}
       >
-        <DashboardHeader user={user} title="Account Settings" subtitle="Manage your developer profile & appearance" />
+        <DashboardHeader
+          user={user}
+          title="Account Settings"
+          subtitle="Manage your developer profile & appearance"
+          onMobileMenuToggle={() => setMobileSidebarOpen(true)}
+        />
 
-        <main style={{ flex: 1, padding: '24px 32px', maxWidth: '850px', width: '100%' }}>
+        <main className="settings-main-content" style={{ flex: 1, padding: '24px 32px', maxWidth: '850px', width: '100%' }}>
           {/* ── 1. Profile Settings Card ── */}
           <div
             style={{
@@ -311,7 +327,7 @@ export default function SettingsShell({ initialUser }: Props) {
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
               {/* Dark Theme Option */}
               <button
                 type="button"

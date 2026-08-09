@@ -118,7 +118,7 @@ export default function GithubBreakdownTable({ githubMetrics, isLoading, onResyn
         </p>
       ) : (
         <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid var(--border)' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <table style={{ width: '100%', minWidth: '640px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
             <thead>
               <tr style={{ background: 'var(--surface-raised)', borderBottom: '1px solid var(--border)' }}>
                 <th style={thStyle}>Repository</th>

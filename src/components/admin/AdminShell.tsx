@@ -13,6 +13,7 @@ interface Props {
 export default function AdminShell({ user, initialQueue }: Props) {
   const [queue, setQueue] = useState<AdminQueueItem[]>(initialQueue);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [actionMessage, setActionMessage] = useState('');
 
   const handleUpdateStatus = async (id: string, status: 'verified' | 'flagged') => {
@@ -41,13 +42,23 @@ export default function AdminShell({ user, initialQueue }: Props) {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .admin-main-container { margin-left: 0 !important; }
+          .admin-main-content { padding: 16px 16px 36px !important; }
+        }
+      `}</style>
+
       <DashboardSidebar
         user={user}
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed((prev) => !prev)}
+        mobileOpen={mobileSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
       />
 
       <div
+        className="admin-main-container"
         style={{
           marginLeft: sidebarWidth,
           transition: 'margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -57,6 +68,7 @@ export default function AdminShell({ user, initialQueue }: Props) {
         }}
       >
         <main
+          className="admin-main-content"
           style={{
             flex: 1,
             padding: '28px 32px 48px',
@@ -65,7 +77,7 @@ export default function AdminShell({ user, initialQueue }: Props) {
             margin: '0 auto',
           }}
         >
-          <DashboardHeader user={user} />
+          <DashboardHeader user={user} onMobileMenuToggle={() => setMobileSidebarOpen(true)} />
 
           <div style={{ marginBottom: '24px' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
@@ -126,9 +138,9 @@ export default function AdminShell({ user, initialQueue }: Props) {
                   }}
                 >
                   {/* Top row */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px', flexWrap: 'wrap' }}>
                         <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                           {item.title}
                         </h3>
@@ -159,7 +171,7 @@ export default function AdminShell({ user, initialQueue }: Props) {
                           href={item.externalUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textDecoration: 'none' }}
+                          style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textDecoration: 'none', wordBreak: 'break-all' }}
                         >
                           🔗 {item.externalUrl} ↗
                         </a>
@@ -171,7 +183,7 @@ export default function AdminShell({ user, initialQueue }: Props) {
                     </div>
 
                     {/* Action buttons */}
-                    <div style={{ display: 'flex', gap: '10px' }}>
+                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                       <button
                         onClick={() => handleUpdateStatus(item.id, 'flagged')}
                         style={{

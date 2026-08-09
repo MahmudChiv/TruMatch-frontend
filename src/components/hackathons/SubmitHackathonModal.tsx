@@ -411,7 +411,7 @@ export default function SubmitHackathonModal({
             </div>
 
             {/* ── Eligibility & Team Size */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '12px' }}>
               <div>
                 <label style={labelStyle}>Eligibility</label>
                 <input type="text" value={form.eligibility} onChange={(e) => setField('eligibility', e.target.value)} placeholder="e.g. Open to all" style={inputStyle} />
@@ -423,7 +423,7 @@ export default function SubmitHackathonModal({
             </div>
 
             {/* ── Venue Type & Location */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '12px' }}>
               <div>
                 <label style={labelStyle}>Venue Type</label>
                 <select value={form.venueType} onChange={(e) => setField('venueType', e.target.value as VenueType)} style={inputStyle}>
@@ -439,7 +439,7 @@ export default function SubmitHackathonModal({
             </div>
 
             {/* ── Start & End Dates */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '12px' }}>
               <div>
                 <label style={labelStyle}>Start Date</label>
                 <input type="date" value={form.startDate} onChange={(e) => setField('startDate', e.target.value)} style={inputStyle} />
@@ -451,7 +451,7 @@ export default function SubmitHackathonModal({
             </div>
 
             {/* ── Application & Submission Deadlines */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '12px' }}>
               <div>
                 <label style={labelStyle}>Application Deadline</label>
                 <input type="date" value={form.applicationDeadline} onChange={(e) => setField('applicationDeadline', e.target.value)} style={inputStyle} />

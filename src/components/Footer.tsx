@@ -283,7 +283,7 @@ export default function Footer() {
         overflow: 'visible',
       }}
     >
-      {/* ── Responsive breakpoints (no custom animation keyframes) ── */}
+      {/* ── Responsive breakpoints ── */}
       <style>{`
         /* prefers-reduced-motion: disable hover transforms */
         @media (prefers-reduced-motion: reduce) {
@@ -296,26 +296,54 @@ export default function Footer() {
           }
         }
 
-        /* 4 → 2 col at 860 px */
-        @media (max-width: 860px) {
+        .ft-main-grid {
+          width: 100%;
+          display: grid;
+          grid-template-columns: 1.4fr 1fr 1fr 1fr;
+          gap: 40px 48px;
+          align-items: flex-start;
+        }
+
+        @media (max-width: 900px) and (min-width: 580px) {
           .ft-main-grid {
             grid-template-columns: 1fr 1fr !important;
+            gap: 36px 32px !important;
           }
         }
 
-        /* 2 → 1 col at 540 px */
-        @media (max-width: 540px) {
+        @media (max-width: 579px) {
           .ft-main-grid {
             grid-template-columns: 1fr !important;
+            gap: 32px !important;
+            text-align: center !important;
           }
           .ft-brand-col {
-            padding-bottom: 32px;
+            align-items: center !important;
+            text-align: center !important;
+            padding-bottom: 24px;
             border-bottom: 1px solid rgba(255,255,255,0.06);
           }
+          .ft-brand-col p {
+            max-width: 100% !important;
+          }
+        }
+
+        .ft-bottom-bar {
+          display: flex;
+          align-items: center;
+          justifyContent: space-between;
+          width: 100%;
+          padding: 24px 0 32px;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+
+        @media (max-width: 640px) {
           .ft-bottom-bar {
             flex-direction: column !important;
-            gap: 8px !important;
+            align-items: center !important;
             text-align: center !important;
+            gap: 12px !important;
           }
         }
       `}</style>
@@ -340,20 +368,13 @@ export default function Footer() {
           position: 'relative',
           zIndex: 1,
           maxWidth: '1200px',
+          width: '100%',
           margin: '0 auto',
-          padding: '72px 40px 0',
+          padding: '72px 24px 0',
         }}
       >
         {/* ── Column grid ── */}
-        <div
-          className="ft-main-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '280px 1fr 1fr 1fr',
-            gap: '40px 48px',
-            alignItems: 'flex-start',
-          }}
-        >
+        <div className="ft-main-grid">
           {/* Brand column */}
           <div className="ft-brand-col" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <FooterLogo />
@@ -364,12 +385,12 @@ export default function Footer() {
               lineHeight: 1.82,
               fontFamily: FONT,
               margin: 0,
-              maxWidth: '240px',
+              maxWidth: '260px',
             }}>
               {TAGLINE}
             </p>
 
-            <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '4px', flexWrap: 'wrap' }}>
               {SOCIALS.map(s => <SocialIcon key={s.label} {...s} />)}
             </div>
           </div>
@@ -387,31 +408,21 @@ export default function Footer() {
           background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)',
         }} />
 
-        {/* ── Bottom bar ── */}
-        <div
-          className="ft-bottom-bar"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '22px 0 28px',
-            gap: '16px',
-            flexWrap: 'wrap',
-          }}
-        >
+        {/* ── Bottom bar — Evenly distributed across available space ── */}
+        <div className="ft-bottom-bar">
           {/* Copyright */}
-          <p style={{ fontSize: '0.78rem', color: '#666666', fontFamily: FONT, margin: 0 }}>
+          <p style={{ fontSize: '0.82rem', color: '#888888', fontFamily: FONT, margin: 0 }}>
             © {year} TruMatch. All rights reserved.
           </p>
 
           {/* Legal links */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap', justifyContent: 'center' }}>
             <BottomLink label="Privacy Policy"   href="#" />
             <BottomLink label="Terms of Service" href="#" />
           </div>
 
           {/* Personal touch */}
-          <p style={{ fontSize: '0.78rem', color: '#666666', fontFamily: FONT, margin: 0 }}>
+          <p style={{ fontSize: '0.82rem', color: '#888888', fontFamily: FONT, margin: 0 }}>
             Built with{' '}
             <span aria-label="love">❤️</span>
             {' '}in Lagos

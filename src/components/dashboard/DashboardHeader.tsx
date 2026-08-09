@@ -7,9 +7,10 @@ interface Props {
   user: UserProfile;
   title?: string;
   subtitle?: string;
+  onMobileMenuToggle?: () => void;
 }
 
-export default function DashboardHeader({ user, title, subtitle }: Props) {
+export default function DashboardHeader({ user, title, subtitle, onMobileMenuToggle }: Props) {
   const avatarInitials = (user.name || user.username).slice(0, 2).toUpperCase();
 
   return (
@@ -21,24 +22,62 @@ export default function DashboardHeader({ user, title, subtitle }: Props) {
       gap: '16px',
       flexWrap: 'wrap',
     }}>
-      {/* Title & subtitle */}
-      <div>
-        <h1 style={{
-          fontSize: '1.5rem',
-          fontWeight: 700,
-          color: 'var(--text-primary)',
-          margin: 0,
-          letterSpacing: '-0.02em',
-        }}>
-          {title || 'Dashboard Overview'}
-        </h1>
-        <p style={{
-          margin: '4px 0 0',
-          fontSize: '0.82rem',
-          color: 'var(--text-muted)',
-        }}>
-          {subtitle || 'Monitor commitment metrics, GitHub signals, and AI interview summary.'}
-        </p>
+      <style>{`
+        @media (max-width: 767px) {
+          .dash-mobile-hamburger { display: flex !important; }
+        }
+        @media (min-width: 768px) {
+          .dash-mobile-hamburger { display: none !important; }
+        }
+      `}</style>
+      
+      {/* Title & subtitle + Mobile hamburger toggle */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        {onMobileMenuToggle && (
+          <button
+            className="dash-mobile-hamburger"
+            onClick={onMobileMenuToggle}
+            aria-label="Open navigation menu"
+            style={{
+              display: 'none',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '38px',
+              height: '38px',
+              borderRadius: '10px',
+              border: '1px solid var(--border-mid)',
+              background: 'var(--surface)',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        )}
+
+        <div>
+          <h1 style={{
+            fontSize: '1.4rem',
+            fontWeight: 700,
+            color: 'var(--text-primary)',
+            margin: 0,
+            letterSpacing: '-0.02em',
+          }}>
+            {title || 'Dashboard Overview'}
+          </h1>
+          <p style={{
+            margin: '4px 0 0',
+            fontSize: '0.82rem',
+            color: 'var(--text-muted)',
+          }}>
+            {subtitle || 'Monitor commitment metrics, GitHub signals, and AI interview summary.'}
+          </p>
+        </div>
       </div>
 
       {/* User info widget */}

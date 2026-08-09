@@ -70,6 +70,8 @@ interface Props {
   user: UserProfile;
   collapsed: boolean;
   onToggle: () => void;
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
 }
 
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
@@ -77,7 +79,7 @@ const DUR = '0.28s';
 
 /* ── Component ────────────────────────────────────────────────────────────── */
 
-export default function DashboardSidebar({ user: _user, collapsed, onToggle }: Props) {
+export default function DashboardSidebar({ user: _user, collapsed, onToggle, mobileOpen = false, onMobileClose }: Props) {
   const pathname = usePathname();
 
   const navItems = [
@@ -92,22 +94,48 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle }: P
   }
 
   return (
-    <aside
-      className="dash-sidebar"
-      style={{
-        position: 'fixed',
-        left: 0, top: 0, bottom: 0,
-        width: collapsed ? '64px' : '240px',
-        transition: `width ${DUR} ${EASE}`,
-        background: 'var(--surface)',
-        borderRight: '1px solid var(--border-mid)',
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 50,
-        overflow: 'hidden',
-      }}
-      aria-label="Primary navigation"
-    >
+    <>
+      {/* Mobile backdrop overlay */}
+      {mobileOpen && (
+        <div
+          onClick={onMobileClose}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 140,
+            background: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(4px)',
+          }}
+        />
+      )}
+
+      <style>{`
+        @media (max-width: 767px) {
+          .dash-sidebar {
+            transform: ${mobileOpen ? 'translateX(0)' : 'translateX(-100%)'} !important;
+            width: 260px !important;
+            z-index: 150 !important;
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          }
+        }
+      `}</style>
+
+      <aside
+        className="dash-sidebar"
+        style={{
+          position: 'fixed',
+          left: 0, top: 0, bottom: 0,
+          width: collapsed ? '64px' : '240px',
+          transition: `width ${DUR} ${EASE}`,
+          background: 'var(--surface)',
+          borderRight: '1px solid var(--border-mid)',
+          display: 'flex',
+          flexDirection: 'column',
+          zIndex: 50,
+          overflow: 'hidden',
+        }}
+        aria-label="Primary navigation"
+      >
       {/* ── Logo / header row ── */}
       <div style={{
         height: '64px',
@@ -363,8 +391,9 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle }: P
               Sign out
             </span>
           </a>
-        </div>
+          </div>
       </div>
     </aside>
+    </>
   );
 }

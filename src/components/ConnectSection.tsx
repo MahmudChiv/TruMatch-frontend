@@ -159,6 +159,26 @@ function FeaturePill({ icon, text }: { icon: string; text: string }) {
    MAIN EXPORT
 ──────────────────────────────────────────────────────────────── */
 export default function ConnectSection() {
+  const [globeSize, setGlobeSize] = useState(580);
+
+  useEffect(() => {
+    const updateSize = () => {
+      const w = window.innerWidth;
+      if (w < 480) {
+        setGlobeSize(Math.min(w - 32, 360));
+      } else if (w < 640) {
+        setGlobeSize(420);
+      } else if (w < 900) {
+        setGlobeSize(500);
+      } else {
+        setGlobeSize(580);
+      }
+    };
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
   return (
     <section
       id="connect"
@@ -171,7 +191,7 @@ export default function ConnectSection() {
         padding: '110px 0 100px',
         fontFamily: FONT,
         position: 'relative',
-        overflow: 'visible',
+        overflow: 'hidden',
       }}
     >
       <style>{`
@@ -183,10 +203,11 @@ export default function ConnectSection() {
           pointer-events: none !important;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
           .connect-grid { flex-direction: column !important; align-items: center !important; }
-          .connect-text { max-width: 100% !important; text-align: center !important; }
-          .connect-stats { justify-content: center !important; }
+          .connect-text { max-width: 100% !important; text-align: center !important; width: 100% !important; flex: 1 1 auto !important; align-items: center !important; }
+          .connect-pills { justify-content: center !important; }
+          .connect-stats { justify-content: center !important; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important; width: 100% !important; }
         }
       `}</style>
 
@@ -205,8 +226,9 @@ export default function ConnectSection() {
       {/* ── Content wrapper ── */}
       <div style={{
         maxWidth: '1200px',
+        width: '100%',
         margin: '0 auto',
-        padding: '0 40px',
+        padding: '0 24px',
       }}>
         <div
           className="connect-grid"
@@ -278,7 +300,7 @@ export default function ConnectSection() {
 
             {/* Feature pills */}
             <Reveal direction="left" delay={0.2}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              <div className="connect-pills" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 <FeaturePill icon="🌐" text="6 continents covered" />
                 <FeaturePill icon="🔒" text="Commitment verified" />
                 <FeaturePill icon="⚡" text="Async-first teams" />
@@ -354,12 +376,15 @@ export default function ConnectSection() {
             justifyContent: 'center',
             position: 'relative',
             minWidth: 0,
+            width: '100%',
+            maxWidth: '100%',
+            overflow: 'hidden',
           }}>
             <GlobeInner
               pointsData={DEV_POINTS}
               arcsData={ARCS}
-              width={580}
-              height={580}
+              width={globeSize}
+              height={globeSize}
             />
           </div>
 

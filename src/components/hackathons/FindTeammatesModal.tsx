@@ -291,7 +291,7 @@ export default function FindTeammatesModal({
                   </div>
 
                   {/* Actions & Charter Toggle */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', paddingTop: '12px', borderTop: '1px solid var(--border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginTop: '16px', paddingTop: '12px', borderTop: '1px solid var(--border)' }}>
                     <button
                       type="button"
                       onClick={() => setCharterCandidateId(isCharterOpen ? null : cand.user.id)}

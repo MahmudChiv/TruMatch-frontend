@@ -21,6 +21,7 @@ export default function DashboardShell({ initialData }: Props) {
   const [data, setData] = useState<DashboardData>(initialData);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Sync state management
   const [syncState, setSyncState] = useState<SyncState>('idle');
@@ -121,29 +122,44 @@ export default function DashboardShell({ initialData }: Props) {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .dash-main-container { margin-left: 0 !important; }
+          .dash-main-content { padding: 16px 16px 36px !important; }
+        }
+      `}</style>
+      
       {/* ── 1. Persistent Left Sidebar ── */}
       <DashboardSidebar
         user={data.user}
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(prev => !prev)}
+        mobileOpen={mobileSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
       />
 
       {/* ── 2. Main Scrollable Container ── */}
-      <div style={{
-        marginLeft: sidebarWidth,
-        transition: 'margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-      }}>
+      <div
+        className="dash-main-container"
+        style={{
+          marginLeft: sidebarWidth,
+          transition: 'margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Main Content Area */}
-        <main style={{
-          flex: 1,
-          padding: '28px 32px 48px',
-          maxWidth: '1400px',
-          width: '100%',
-          margin: '0 auto',
-        }}>
+        <main
+          className="dash-main-content"
+          style={{
+            flex: 1,
+            padding: '28px 32px 48px',
+            maxWidth: '1400px',
+            width: '100%',
+            margin: '0 auto',
+          }}
+        >
           {/* Refresh indicator floating pill */}
           {isRefreshing && (
             <div style={{
@@ -157,7 +173,7 @@ export default function DashboardShell({ initialData }: Props) {
           )}
 
           {/* ── Top Header Bar ── */}
-          <DashboardHeader user={data.user} />
+          <DashboardHeader user={data.user} onMobileMenuToggle={() => setMobileSidebarOpen(true)} />
 
           {/* ── Stat Card Row (4 equal columns) ── */}
           <DashboardStatCards

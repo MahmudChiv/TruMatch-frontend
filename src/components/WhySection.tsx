@@ -286,6 +286,7 @@ function StatStrip() {
   return (
     <div
       ref={ref}
+      className="stat-grid"
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
@@ -363,55 +364,61 @@ export default function WhySection() {
       id="why-trumatch"
       style={{
         width: '100%',
+        overflow: 'hidden',
         /* Distinct purple-tinted dark background */
         background: 'linear-gradient(180deg, #0c0810 0%, #0b0810 50%, #0a070e 100%)',
         borderTop:    '1px solid rgba(168,85,247,0.08)',
         borderBottom: '1px solid rgba(168,85,247,0.06)',
-        padding: '120px 0',
+        padding: '100px 0',
         fontFamily: FONT,
       }}
     >
       {/* Inner max-width wrapper */}
       <div style={{
-        maxWidth: '1100px',
+        maxWidth: '1200px',
+        width: '100%',
         margin: '0 auto',
-        padding: '0 28px',
+        padding: '0 24px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '100px',
+        gap: '90px',
       }}>
       <style>{`
         @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-        @media (max-width: 680px) {
-          .stat-grid { grid-template-columns: 1fr !important; }
+        @media (max-width: 900px) {
+          .stat-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .pain-grid { grid-template-columns: 1fr !important; }
+          .how-steps-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
+        }
+        @media (max-width: 580px) {
+          .stat-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
 
       {/* ── BLOCK 1: The Problem ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '44px', width: '100%', alignItems: 'center' }}>
         <Reveal>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '680px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '800px', textAlign: 'center', alignItems: 'center' }}>
             <SectionLabel>The Problem</SectionLabel>
             <h2
               style={{
                 fontSize: 'clamp(1.9rem, 4vw, 3rem)',
                 fontWeight: 700,
                 color: '#f2f2f2',
-                lineHeight: 1.15,
+                lineHeight: 1.18,
                 letterSpacing: '-0.01em',
                 fontFamily: FONT,
               }}
             >
               Hackathon | Startup teams fail before<br />
-              <span style={{ color: '#525252' }}>the first commit lands.</span>
+              <span style={{ color: '#666666' }}>the first commit lands.</span>
             </h2>
             <p
               style={{
-                fontSize: '1rem',
-                color: '#666',
+                fontSize: '1.02rem',
+                color: '#888888',
                 lineHeight: 1.8,
-                maxWidth: '560px',
+                maxWidth: '680px',
                 fontFamily: FONT,
               }}
             >
@@ -428,8 +435,9 @@ export default function WhySection() {
           className="pain-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '16px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: '20px',
+            width: '100%',
           }}
         >
           {PAIN_POINTS.map((p, i) => (
@@ -448,29 +456,29 @@ export default function WhySection() {
       <HR />
 
       {/* ── BLOCK 3: The Solution ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '56px', width: '100%', alignItems: 'center' }}>
         <Reveal>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '680px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '800px', textAlign: 'center', alignItems: 'center' }}>
             <SectionLabel>How TruMatch Fixes It</SectionLabel>
             <h2
               style={{
                 fontSize: 'clamp(1.9rem, 4vw, 3rem)',
                 fontWeight: 700,
                 color: '#f2f2f2',
-                lineHeight: 1.15,
+                lineHeight: 1.18,
                 letterSpacing: '-0.01em',
                 fontFamily: FONT,
               }}
             >
               Commitment verified by actions,<br />
-              <span style={{ color: '#525252' }}>not promises.</span>
+              <span style={{ color: '#666666' }}>not promises.</span>
             </h2>
             <p
               style={{
-                fontSize: '1rem',
-                color: '#666',
+                fontSize: '1.02rem',
+                color: '#888888',
                 lineHeight: 1.8,
-                maxWidth: '560px',
+                maxWidth: '680px',
                 fontFamily: FONT,
               }}
             >
@@ -484,10 +492,12 @@ export default function WhySection() {
 
         {/* Steps */}
         <div
+          className="how-steps-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             gap: '40px 60px',
+            width: '100%',
           }}
         >
           {HOW_STEPS.map((step, i) => (

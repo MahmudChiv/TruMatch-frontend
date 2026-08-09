@@ -13,6 +13,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -27,11 +28,22 @@ export default function Navbar() {
         top: 0, left: 0, right: 0,
         zIndex: 100,
         transition: 'background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease',
-        background: scrolled ? 'rgba(10, 10, 10, 0.88)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(20px) saturate(120%)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
+        background: scrolled || mobileMenuOpen ? 'rgba(10, 10, 10, 0.95)' : 'transparent',
+        backdropFilter: scrolled || mobileMenuOpen ? 'blur(20px) saturate(120%)' : 'none',
+        borderBottom: scrolled || mobileMenuOpen ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
       }}
     >
+      <style>{`
+        @media (max-width: 767px) {
+          .nav-desktop-items { display: none !important; }
+          .nav-desktop-cta { display: none !important; }
+          .nav-mobile-toggle { display: flex !important; }
+        }
+        @media (min-width: 768px) {
+          .nav-mobile-toggle { display: none !important; }
+          .nav-mobile-menu { display: none !important; }
+        }
+      `}</style>
       <nav
         style={{
           maxWidth: '1200px',
@@ -64,7 +76,7 @@ export default function Navbar() {
         </a>
 
         {/* ── Desktop nav links ── */}
-        <ul style={{ display: 'flex', alignItems: 'center', gap: '4px', listStyle: 'none', marginLeft: 'auto' }}>
+        <ul className="nav-desktop-items" style={{ display: 'flex', alignItems: 'center', gap: '4px', listStyle: 'none', marginLeft: 'auto' }}>
           {NAV_ITEMS.map(item => (
             <li key={item.label}>
               <a
@@ -98,7 +110,7 @@ export default function Navbar() {
         </ul>
 
         {/* ── CTA buttons ── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div className="nav-desktop-cta" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <a
             href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/auth/github`}
             style={{
@@ -145,7 +157,110 @@ export default function Navbar() {
             Get Started
           </a>
         </div>
+
+        {/* ── Mobile Hamburger Toggle Button ── */}
+        <button
+          className="nav-mobile-toggle"
+          onClick={() => setMobileMenuOpen(prev => !prev)}
+          aria-label="Toggle Navigation Menu"
+          style={{
+            display: 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '40px',
+            height: '40px',
+            borderRadius: '10px',
+            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(255,255,255,0.05)',
+            color: '#f0ece4',
+            cursor: 'pointer',
+          }}
+        >
+          {mobileMenuOpen ? (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          )}
+        </button>
       </nav>
+
+      {/* ── Mobile Dropdown Drawer ── */}
+      {mobileMenuOpen && (
+        <div
+          className="nav-mobile-menu"
+          style={{
+            background: 'rgba(10, 10, 10, 0.98)',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+            padding: '20px 28px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            backdropFilter: 'blur(20px)',
+          }}
+        >
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', padding: 0, margin: 0 }}>
+            {NAV_ITEMS.map(item => (
+              <li key={item.label}>
+                <a
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    color: '#f0ece4',
+                    textDecoration: 'none',
+                    fontSize: '1.05rem',
+                    fontWeight: 600,
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    display: 'block',
+                    background: 'rgba(255,255,255,0.03)',
+                  }}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <a
+              href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/auth/github`}
+              style={{
+                color: '#f0ece4',
+                textDecoration: 'none',
+                fontSize: '0.95rem',
+                fontWeight: 600,
+                padding: '12px',
+                textAlign: 'center',
+                borderRadius: '10px',
+                border: '1px solid rgba(255,255,255,0.12)',
+              }}
+            >
+              Sign in
+            </a>
+            <a
+              href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/auth/github`}
+              style={{
+                background: 'linear-gradient(135deg, #201927ff 0%, #272623ff 100%)',
+                color: '#fff',
+                textDecoration: 'none',
+                fontSize: '0.95rem',
+                fontWeight: 700,
+                padding: '12px',
+                textAlign: 'center',
+                borderRadius: '10px',
+              }}
+            >
+              Get Started with GitHub
+            </a>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

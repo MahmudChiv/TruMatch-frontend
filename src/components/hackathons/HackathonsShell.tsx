@@ -158,19 +158,30 @@ export default function HackathonsShell({ user: initialUser, initialHackathons }
     [filteredHackathons]
   );
 
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const sidebarWidth = sidebarCollapsed ? '64px' : '240px';
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .hack-main-container { margin-left: 0 !important; }
+          .hack-main-content { padding: 16px 16px 36px !important; }
+        }
+      `}</style>
+
       {/* 1. Sidebar */}
       <DashboardSidebar
         user={user}
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed((prev) => !prev)}
+        mobileOpen={mobileSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
       />
 
       {/* 2. Main Content */}
       <div
+        className="hack-main-container"
         style={{
           marginLeft: sidebarWidth,
           transition: 'margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -180,6 +191,7 @@ export default function HackathonsShell({ user: initialUser, initialHackathons }
         }}
       >
         <main
+          className="hack-main-content"
           style={{
             flex: 1,
             padding: '28px 32px 48px',
@@ -189,7 +201,7 @@ export default function HackathonsShell({ user: initialUser, initialHackathons }
           }}
         >
           {/* Top Header Bar */}
-          <DashboardHeader user={user} />
+          <DashboardHeader user={user} onMobileMenuToggle={() => setMobileSidebarOpen(true)} />
 
           {/* Location Request Prompt Banner (If coordinates not saved yet) */}
           {user.latitude == null && !locationPromptDismissed && (

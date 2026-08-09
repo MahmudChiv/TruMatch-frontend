@@ -963,6 +963,20 @@ const styles = `
     gap: 1rem;
     width: 100%;
   }
+  @media (max-width: 640px) {
+    .iv-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+    .iv-metric-full {
+      grid-column: span 1 !important;
+    }
+    .iv-card {
+      padding: 1.25rem 1rem !important;
+    }
+    .iv-chat-footer {
+      padding: 0.75rem 1rem 1rem !important;
+    }
+  }
   .iv-metric-box {
     background: linear-gradient(180deg, #0e0914 0%, #0c0812 100%);
     border: 1px solid rgba(168,85,247,0.18);
