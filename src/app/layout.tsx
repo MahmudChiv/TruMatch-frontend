@@ -36,6 +36,8 @@ export const metadata: Metadata = {
   },
 };
 
+import ThemeProvider from "@/components/ThemeProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -44,8 +46,22 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${eduHand.variable}`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var saved = localStorage.getItem('trumatch_theme');
+                if (saved === 'light' || saved === 'dark') {
+                  document.documentElement.setAttribute('data-theme', saved);
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body style={{ fontFamily: "var(--font-edu-hand), cursive", wordSpacing: "0.18em" }}>
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

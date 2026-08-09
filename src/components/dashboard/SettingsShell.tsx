@@ -54,7 +54,9 @@ export default function SettingsShell({ initialUser }: Props) {
       document.documentElement.setAttribute('data-theme', 'light');
     } else {
       document.documentElement.removeAttribute('data-theme');
+      document.documentElement.setAttribute('data-theme', 'dark');
     }
+    window.dispatchEvent(new Event('trumatch-theme-changed'));
   };
 
   const toggleRoleTag = (tag: string) => {
@@ -109,6 +111,9 @@ export default function SettingsShell({ initialUser }: Props) {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
       <style>{`
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .settings-main-container { margin-left: 64px !important; }
+        }
         @media (max-width: 767px) {
           .settings-main-container { margin-left: 0 !important; }
           .settings-main-content { padding: 16px 16px 36px !important; }
@@ -140,7 +145,7 @@ export default function SettingsShell({ initialUser }: Props) {
           onMobileMenuToggle={() => setMobileSidebarOpen(true)}
         />
 
-        <main className="settings-main-content" style={{ flex: 1, padding: '24px 32px', maxWidth: '850px', width: '100%' }}>
+        <main className="settings-main-content" style={{ flex: 1, padding: '28px 32px 48px', maxWidth: '1200px', width: '100%', margin: '0 auto' }}>
           {/* ── 1. Profile Settings Card ── */}
           <div
             style={{

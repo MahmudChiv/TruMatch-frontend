@@ -639,7 +639,7 @@ const styles = `
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 2rem 1.5rem;
+    padding: 5.5rem 1.5rem 3rem;
   }
 
   /* Cards — whySection background */

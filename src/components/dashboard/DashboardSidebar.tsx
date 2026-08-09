@@ -110,12 +110,40 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle, mob
       )}
 
       <style>{`
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .dash-sidebar {
+            width: 64px !important;
+          }
+          .dash-sidebar-wordmark,
+          .dash-sidebar-label {
+            opacity: 0 !important;
+            max-width: 0px !important;
+          }
+          #sidebar-collapse-btn {
+            display: none !important;
+          }
+        }
+
         @media (max-width: 767px) {
           .dash-sidebar {
             transform: ${mobileOpen ? 'translateX(0)' : 'translateX(-100%)'} !important;
             width: 260px !important;
             z-index: 150 !important;
             transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          }
+          .dash-sidebar-wordmark {
+            opacity: 1 !important;
+            max-width: 160px !important;
+          }
+          .dash-sidebar-label {
+            opacity: 1 !important;
+            max-width: 180px !important;
+          }
+          #sidebar-collapse-btn {
+            opacity: 1 !important;
+            max-width: 28px !important;
+            pointer-events: auto !important;
+            display: flex !important;
           }
         }
       `}</style>
@@ -167,7 +195,7 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle, mob
             style={{ flexShrink: 0, display: 'block' }}
           />
           {/* Wordmark — fades + collapses on sidebar close */}
-          <span style={{
+          <span className="dash-sidebar-wordmark" style={{
             fontWeight: 700,
             fontSize: '1rem',
             letterSpacing: '-0.01em',
@@ -185,11 +213,17 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle, mob
           </span>
         </a>
 
-        {/* X collapse button — hides when collapsed */}
+        {/* X collapse / mobile close button */}
         <button
-          onClick={onToggle}
+          onClick={() => {
+            if (mobileOpen && onMobileClose) {
+              onMobileClose();
+            } else {
+              onToggle();
+            }
+          }}
           id="sidebar-collapse-btn"
-          aria-label="Collapse sidebar"
+          aria-label={mobileOpen ? "Close sidebar drawer" : "Collapse sidebar"}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -226,15 +260,13 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle, mob
         </button>
       </div>
 
-      {/* ── Expand button — only visible when collapsed ── */}
+      {/* Floating Expand Button — when collapsed (Desktop) */}
       <div style={{
-        height: collapsed ? '44px' : '0px',
-        overflow: 'hidden',
-        transition: `height ${DUR} ${EASE}`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
+        position: 'absolute',
+        top: '16px',
+        left: '16px',
+        zIndex: 10,
+        display: collapsed ? 'block' : 'none',
       }}>
         <button
           onClick={onToggle}
@@ -331,7 +363,7 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle, mob
               </span>
 
             {/* Label — animates out when collapsed */}
-            <span style={{
+            <span className="dash-sidebar-label" style={{
               opacity: collapsed ? 0 : 1,
               maxWidth: collapsed ? '0px' : '180px',
               overflow: 'hidden',
@@ -381,7 +413,7 @@ export default function DashboardSidebar({ user: _user, collapsed, onToggle, mob
             <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20px' }}>
               <IconLogOut />
             </span>
-            <span style={{
+            <span className="dash-sidebar-label" style={{
               opacity: collapsed ? 0 : 1,
               maxWidth: collapsed ? '0px' : '180px',
               overflow: 'hidden',

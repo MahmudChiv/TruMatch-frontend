@@ -123,6 +123,9 @@ export default function DashboardShell({ initialData }: Props) {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
       <style>{`
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .dash-main-container { margin-left: 64px !important; }
+        }
         @media (max-width: 767px) {
           .dash-main-container { margin-left: 0 !important; }
           .dash-main-content { padding: 16px 16px 36px !important; }

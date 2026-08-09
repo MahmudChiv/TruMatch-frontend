@@ -43,6 +43,9 @@ export default function AdminShell({ user, initialQueue }: Props) {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
       <style>{`
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .admin-main-container { margin-left: 64px !important; }
+        }
         @media (max-width: 767px) {
           .admin-main-container { margin-left: 0 !important; }
           .admin-main-content { padding: 16px 16px 36px !important; }

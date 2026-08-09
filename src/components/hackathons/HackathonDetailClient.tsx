@@ -15,6 +15,7 @@ interface Props {
 export default function HackathonDetailClient({ user, initialHackathon }: Props) {
   const [hackathon, setHackathon] = useState<HackathonDetail>(initialHackathon);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [showMatchingModal, setShowMatchingModal] = useState(false);
@@ -66,13 +67,26 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+      <style>{`
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .hack-detail-main-container { margin-left: 64px !important; }
+        }
+        @media (max-width: 767px) {
+          .hack-detail-main-container { margin-left: 0 !important; }
+          .hack-detail-main-content { padding: 16px 16px 36px !important; }
+        }
+      `}</style>
+
       <DashboardSidebar
         user={user}
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed((prev) => !prev)}
+        mobileOpen={mobileSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
       />
 
       <div
+        className="hack-detail-main-container"
         style={{
           marginLeft: sidebarWidth,
           transition: 'margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -82,6 +96,7 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
         }}
       >
         <main
+          className="hack-detail-main-content"
           style={{
             flex: 1,
             padding: '28px 32px 48px',
@@ -90,7 +105,7 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
             margin: '0 auto',
           }}
         >
-          <DashboardHeader user={user} />
+          <DashboardHeader user={user} onMobileMenuToggle={() => setMobileSidebarOpen(true)} />
 
           {/* Back link */}
           <a

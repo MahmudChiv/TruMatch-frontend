@@ -164,6 +164,9 @@ export default function HackathonsShell({ user: initialUser, initialHackathons }
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
       <style>{`
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .hack-main-container { margin-left: 64px !important; }
+        }
         @media (max-width: 767px) {
           .hack-main-container { margin-left: 0 !important; }
           .hack-main-content { padding: 16px 16px 36px !important; }
