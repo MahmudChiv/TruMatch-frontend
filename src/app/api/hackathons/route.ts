@@ -17,13 +17,14 @@ export async function GET() {
 
     if (!res.ok) {
       const err = await res.text();
+      console.error(`[api/hackathons] Backend error ${res.status} from ${BACKEND_URL}/hackathons:`, err);
       return NextResponse.json({ error: err || 'Failed to fetch hackathons' }, { status: res.status });
     }
 
     const data = await res.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error fetching hackathons proxy:', error);
+    console.error(`[api/hackathons] Error proxying GET to ${BACKEND_URL}/hackathons:`, error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

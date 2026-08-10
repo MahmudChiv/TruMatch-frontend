@@ -15,9 +15,13 @@ async function getHackathons(token: string): Promise<HackathonSummary[]> {
       headers: { Authorization: `Bearer ${token}` },
       cache: 'no-store',
     });
-    if (!res.ok) return [];
+    if (!res.ok) {
+      console.error(`[HackathonsPage] Failed to fetch hackathons (${res.status}) from: ${backendUrl}/hackathons`);
+      return [];
+    }
     return res.json();
-  } catch {
+  } catch (err) {
+    console.error(`[HackathonsPage] Network/connect error fetching from ${backendUrl}/hackathons:`, err);
     return [];
   }
 }
