@@ -46,30 +46,50 @@ export default function InterviewPage() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const activeChunkTextRef = useRef<string>('');
 
-  // ── 1. Fetch authenticated user profile ────────────────────────────────────
+  // ── 1. Fetch authenticated user + check interview status ──────────────────
   useEffect(() => {
-    fetch('/api/me')
-      .then((res) => {
-        if (!res.ok) throw new Error('Unauthorized');
-        return res.json();
-      })
-      .then((data: UserProfile) => {
-        setUser(data);
-        setSessionState('intro');
-      })
-      .catch(() => {
-        // Fallback user state
-        setUser({
-          id: 'me',
-          githubId: 'github-user',
-          username: 'Developer',
-          commitmentScore: 0,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        });
-        setSessionState('intro');
-      });
-  }, []);
+    let cancelled = false;
+
+    async function checkStatusAndLoad() {
+      try {
+        const meRes = await fetch('/api/me');
+        if (!meRes.ok) throw new Error('Unauthorized');
+        const userData: UserProfile = await meRes.json();
+
+        if (cancelled) return;
+        setUser(userData);
+
+        // Check if interview is already complete — redirect to dashboard if so.
+        // The interview is a one-time onboarding step and cannot be retaken.
+        const dashRes = await fetch('/api/dashboard');
+        if (!cancelled && dashRes.ok) {
+          const dash = await dashRes.json();
+          if (dash?.interviewSession?.status === 'complete') {
+            router.replace('/dashboard');
+            return;
+          }
+        }
+
+        if (!cancelled) setSessionState('intro');
+      } catch {
+        if (!cancelled) {
+          // Fallback user state — still show intro (API will reject if truly unauthorized)
+          setUser({
+            id: 'me',
+            githubId: 'github-user',
+            username: 'Developer',
+            commitmentScore: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          });
+          setSessionState('intro');
+        }
+      }
+    }
+
+    checkStatusAndLoad();
+    return () => { cancelled = true; };
+  }, [router]);
 
   // Prefetch dashboard when score is revealed
   useEffect(() => {
