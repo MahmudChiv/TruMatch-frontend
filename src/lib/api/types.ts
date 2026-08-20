@@ -465,6 +465,7 @@ export interface HackathonDetail extends HackathonSummary {
   latitude: number | null;
   longitude: number | null;
   participants: ParticipantUser[];
+  myTeam?: any | null;
 }
 
 export interface CreateHackathonPayload {

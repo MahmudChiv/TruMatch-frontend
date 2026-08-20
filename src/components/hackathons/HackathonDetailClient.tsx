@@ -52,6 +52,7 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
 
   const [pendingInvite, setPendingInvite] = useState<any | null>(null);
   const [isResponding, setIsResponding] = useState(false);
+  const [showAcceptSuccessModal, setShowAcceptSuccessModal] = useState(false);
 
   const fetchPendingInvite = async () => {
     try {
@@ -81,6 +82,9 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
 
       if (res.ok) {
         setPendingInvite(null);
+        if (action === 'accept') {
+          setShowAcceptSuccessModal(true);
+        }
         // Refresh hackathon details
         const freshRes = await fetch(`/api/hackathons/${hackathon.id}`);
         if (freshRes.ok) {
@@ -555,6 +559,183 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
             </div>
           </div>
 
+          {/* Active Team Roster & Contact Hub */}
+          {hackathon.myTeam && (
+            <div
+              id="team-roster-section"
+              style={{
+                background: 'linear-gradient(135deg, rgba(52, 211, 153, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%)',
+                border: '1px solid rgba(52, 211, 153, 0.3)',
+                borderRadius: '20px',
+                padding: '28px',
+                marginBottom: '32px',
+                boxShadow: '0 12px 32px rgba(0,0,0,0.3)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '1.2rem' }}>🎉</span>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
+                      Your Team Roster & Contact Hub
+                    </h3>
+                    <span
+                      style={{
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        padding: '3px 10px',
+                        borderRadius: '99px',
+                        background: hackathon.myTeam.status === 'complete' ? 'rgba(52, 211, 153, 0.2)' : 'rgba(192, 132, 252, 0.2)',
+                        border: hackathon.myTeam.status === 'complete' ? '1px solid #34d399' : '1px solid #c084fc',
+                        color: hackathon.myTeam.status === 'complete' ? '#34d399' : '#c084fc',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      {hackathon.myTeam.status === 'complete' ? 'Team Complete ✓' : 'Team Forming'} ({hackathon.myTeam.members?.length || 1} members)
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '4px 0 0' }}>
+                    Reach out to your teammates via email or GitHub to coordinate project architecture and register together.
+                  </p>
+                </div>
+
+                {hackathon.externalUrl && (
+                  <a
+                    href={hackathon.externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '10px 18px',
+                      borderRadius: '10px',
+                      background: 'linear-gradient(135deg, #10b981, #059669)',
+                      border: 'none',
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)',
+                    }}
+                  >
+                    Complete Official Registration ↗
+                  </a>
+                )}
+              </div>
+
+              {/* Members List */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+                {hackathon.myTeam.members?.map((mem: any) => {
+                  const mUser = mem.user;
+                  if (!mUser) return null;
+                  const isMe = mUser.id === user.id;
+
+                  return (
+                    <div
+                      key={mUser.id}
+                      style={{
+                        background: 'var(--surface)',
+                        border: '1px solid var(--border-mid)',
+                        borderRadius: '16px',
+                        padding: '18px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '12px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '44px', height: '44px', borderRadius: '50%', overflow: 'hidden', background: 'var(--surface-raised)', flexShrink: 0 }}>
+                          {mUser.avatarUrl ? (
+                            <Image src={mUser.avatarUrl} alt={mUser.username} width={44} height={44} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          ) : (
+                            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#c084fc' }}>
+                              {(mUser.name || mUser.username).slice(0, 2).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-primary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                              {mUser.name || mUser.username}
+                            </span>
+                            {isMe && <span style={{ fontSize: '0.68rem', padding: '1px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.1)', color: 'var(--text-muted)' }}>You</span>}
+                          </div>
+                          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', display: 'block' }}>@{mUser.username}</span>
+                        </div>
+
+                        <div style={{ padding: '3px 8px', borderRadius: '6px', background: 'rgba(192,132,252,0.15)', border: '1px solid rgba(192,132,252,0.3)', color: '#c084fc', fontSize: '0.74rem', fontWeight: 700 }}>
+                          ⚡ {Math.round(mUser.commitmentScore || 0)}
+                        </div>
+                      </div>
+
+                      {/* Stack & Role Tags */}
+                      {(mUser.roleTags?.length > 0 || mUser.primaryStack) && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                          {mUser.roleTags?.map((tag: string) => (
+                            <span key={tag} style={{ fontSize: '0.68rem', padding: '2px 8px', borderRadius: '6px', background: 'var(--surface-raised)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Contact Details */}
+                      <div style={{ paddingTop: '10px', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.78rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                          <span style={{ color: 'var(--text-muted)' }}>Email:</span>
+                          <span style={{ color: 'var(--text-primary)', fontWeight: 600, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                            {mUser.email || `${mUser.username}@users.noreply.github.com`}
+                          </span>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
+                          {mUser.email && (
+                            <a
+                              href={`mailto:${mUser.email}?subject=TruMatch%20Team%20Coordination%20-%20${encodeURIComponent(hackathon.title)}`}
+                              style={{
+                                flex: 1,
+                                padding: '6px 12px',
+                                borderRadius: '8px',
+                                background: 'rgba(52, 211, 153, 0.15)',
+                                border: '1px solid rgba(52, 211, 153, 0.3)',
+                                color: '#34d399',
+                                textDecoration: 'none',
+                                textAlign: 'center',
+                                fontWeight: 700,
+                                fontSize: '0.74rem',
+                              }}
+                            >
+                              ✉️ Email Teammate
+                            </a>
+                          )}
+                          <a
+                            href={`https://github.com/${mUser.username}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              padding: '6px 12px',
+                              borderRadius: '8px',
+                              background: 'var(--surface-raised)',
+                              border: '1px solid var(--border)',
+                              color: 'var(--text-secondary)',
+                              textDecoration: 'none',
+                              fontSize: '0.74rem',
+                              fontWeight: 600,
+                            }}
+                          >
+                            GitHub ↗
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Participant Roster */}
           <div
             style={{
@@ -654,6 +835,124 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
           </div>
         </main>
       </div>
+
+      {/* Accept Invite Success Modal */}
+      {showAcceptSuccessModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 1100,
+            background: 'rgba(0,0,0,0.85)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+          }}
+          onClick={() => setShowAcceptSuccessModal(false)}
+        >
+          <div
+            style={{
+              background: 'var(--surface)',
+              border: '1px solid rgba(52, 211, 153, 0.4)',
+              borderRadius: '24px',
+              padding: '32px',
+              maxWidth: '520px',
+              width: '100%',
+              textAlign: 'center',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.6)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'rgba(52, 211, 153, 0.15)',
+                border: '1px solid #34d399',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '2rem',
+                margin: '0 auto 16px',
+              }}
+            >
+              🎉
+            </div>
+
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+              Team Invite Accepted!
+            </h2>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginTop: '10px' }}>
+              You have successfully joined the team for <strong>{hackathon.title}</strong>!
+            </p>
+
+            <div
+              style={{
+                background: 'rgba(0,0,0,0.3)',
+                border: '1px solid var(--border-mid)',
+                borderRadius: '14px',
+                padding: '16px',
+                margin: '20px 0',
+                textAlign: 'left',
+                fontSize: '0.84rem',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              <p style={{ margin: '0 0 6px', fontWeight: 700, color: '#34d399' }}>
+                🚀 Next Steps:
+              </p>
+              <ol style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <li>Reach out to your teammates via email to coordinate project stack and roles.</li>
+                <li>Go ahead and complete your official team registration on the hackathon event site.</li>
+              </ol>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {hackathon.externalUrl && (
+                <a
+                  href={hackathon.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setShowAcceptSuccessModal(false)}
+                  style={{
+                    padding: '12px 20px',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, #10b981, #059669)',
+                    color: '#ffffff',
+                    textDecoration: 'none',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    boxShadow: '0 4px 14px rgba(16, 185, 129, 0.4)',
+                  }}
+                >
+                  Complete Official Registration ↗
+                </a>
+              )}
+              <button
+                onClick={() => {
+                  setShowAcceptSuccessModal(false);
+                  document.getElementById('team-roster-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                style={{
+                  padding: '12px 20px',
+                  borderRadius: '12px',
+                  background: 'var(--surface-raised)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                  fontWeight: 600,
+                  fontSize: '0.88rem',
+                  cursor: 'pointer',
+                }}
+              >
+                View Team Roster & Contacts
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
