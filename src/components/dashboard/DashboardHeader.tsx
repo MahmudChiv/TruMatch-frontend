@@ -304,7 +304,7 @@ export default function DashboardHeader({ user, title, subtitle, onMobileMenuTog
                             {isTeamInvite ? '🤝' : notif.type === 'invite_accepted' ? '✓' : notif.type === 'invite_declined' ? '✕' : '🔔'}
                           </span>
                           <span style={{ fontSize: '0.84rem', fontWeight: isUnread ? 700 : 500, color: 'var(--text-primary)', lineHeight: 1.3 }}>
-                            {notif.message || (isTeamInvite ? 'Team Invite Received' : 'Notification')}
+                            {notif.payload?.message || notif.message || (isTeamInvite ? 'Team Invite Received' : 'Notification')}
                           </span>
                         </div>
                         <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', flexShrink: 0 }}>
