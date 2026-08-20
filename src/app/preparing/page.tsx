@@ -62,6 +62,7 @@ function PreparingContent() {
   const [visible, setVisible] = useState(true);
   const [typewriterText, setTypewriterText] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [noticeMessage, setNoticeMessage] = useState<string | null>(null);
   const [dots, setDots] = useState('');
 
   const socketRef = useRef<Socket | null>(null);
@@ -84,6 +85,10 @@ function PreparingContent() {
         if (data.status === 'complete') {
           completedRef.current = true;
           router.push('/interview');
+        } else if (data.status === 'insufficient_data') {
+          completedRef.current = true;
+          setNoticeMessage('Not enough GitHub history yet to compute this signal');
+          setTimeout(() => router.push('/interview'), 800);
         } else if (data.status === 'failed') {
           completedRef.current = true;
           setError(data.error ?? 'Something went wrong analysing your GitHub data.');
@@ -108,8 +113,14 @@ function PreparingContent() {
     socket.on('github-sync:complete', (data: GithubSyncCompleteEvent) => {
       if (completedRef.current) return;
       completedRef.current = true;
+
       if (data.status === 'complete') {
         setTimeout(() => router.push('/interview'), 800);
+      } else if (data.status === 'insufficient_data') {
+        setNoticeMessage('Not enough GitHub history yet to compute this signal');
+        setTimeout(() => router.push('/interview'), 800);
+      } else if (data.status === 'failed') {
+        setError(data.error ?? 'Something went wrong analysing your GitHub data.');
       } else {
         setError(data.error ?? 'Something went wrong analysing your GitHub data.');
       }
@@ -241,7 +252,9 @@ function PreparingContent() {
       {/* Footer status */}
       <footer className="prep-footer">
         <span className="prep-spinner" aria-hidden="true" />
-        <span className="prep-status">Analysing your GitHub history{dots}</span>
+        <span className="prep-status">
+          {noticeMessage ?? `Analysing your GitHub history${dots}`}
+        </span>
       </footer>
 
       <style>{styles}</style>

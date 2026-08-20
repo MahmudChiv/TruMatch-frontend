@@ -67,6 +67,11 @@ export default function ProfileSection({ user, githubMetrics, onSyncComplete }: 
           onSyncComplete();
           // Reset to idle after 3s
           setTimeout(() => setSyncState('idle'), 3000);
+        } else if (data.status === 'insufficient_data') {
+          setSyncState('done');
+          setSyncMessage('Not enough GitHub history yet to compute this signal');
+          onSyncComplete();
+          setTimeout(() => setSyncState('idle'), 3000);
         } else {
           setSyncState('error');
           setSyncMessage('Sync finished with errors. Your previous score is shown.');

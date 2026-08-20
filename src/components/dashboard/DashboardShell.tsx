@@ -88,6 +88,11 @@ export default function DashboardShell({ initialData }: Props) {
           setSyncMessage('GitHub data updated!');
           refresh();
           setTimeout(() => setSyncState('idle'), 3000);
+        } else if (evt.status === 'insufficient_data') {
+          setSyncState('done');
+          setSyncMessage('Not enough GitHub history yet to compute this signal');
+          refresh();
+          setTimeout(() => setSyncState('idle'), 3000);
         } else {
           setSyncState('error');
           setSyncMessage('Sync finished with errors.');
