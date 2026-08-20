@@ -6,6 +6,7 @@ import type { HackathonDetail, UserProfile } from '@/lib/api/types';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import FindTeammatesModal from '@/components/hackathons/FindTeammatesModal';
+import RateTeammateModal from '@/components/hackathons/RateTeammateModal';
 
 interface Props {
   user: UserProfile;
@@ -53,6 +54,36 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
   const [pendingInvite, setPendingInvite] = useState<any | null>(null);
   const [isResponding, setIsResponding] = useState(false);
   const [showAcceptSuccessModal, setShowAcceptSuccessModal] = useState(false);
+
+  const [rateeToRate, setRateeToRate] = useState<any | null>(null);
+  const [isCompletingTeam, setIsCompletingTeam] = useState(false);
+  const [completingSuccessMessage, setCompletingSuccessMessage] = useState('');
+
+  const handleCompleteTeam = async () => {
+    if (!hackathon.myTeam) return;
+    setIsCompletingTeam(true);
+    setCompletingSuccessMessage('');
+    try {
+      const res = await fetch(`/api/teams/${hackathon.myTeam.id}/complete`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        setCompletingSuccessMessage('Team marked complete! Rating notifications sent to all members.');
+        const freshRes = await fetch(`/api/hackathons/${hackathon.id}`);
+        if (freshRes.ok) {
+          const freshData: HackathonDetail = await freshRes.json();
+          setHackathon(freshData);
+        }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || 'Failed to complete team.');
+      }
+    } catch {
+      alert('Error marking team as complete.');
+    } finally {
+      setIsCompletingTeam(false);
+    }
+  };
 
   const fetchPendingInvite = async () => {
     try {
@@ -599,30 +630,72 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
                   </p>
                 </div>
 
-                {hackathon.externalUrl && (
-                  <a
-                    href={hackathon.externalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      padding: '10px 18px',
-                      borderRadius: '10px',
-                      background: 'linear-gradient(135deg, #10b981, #059669)',
-                      border: 'none',
-                      color: '#ffffff',
-                      textDecoration: 'none',
-                      fontWeight: 700,
-                      fontSize: '0.85rem',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)',
-                    }}
-                  >
-                    Complete Official Registration ↗
-                  </a>
-                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  {hackathon.myTeam.status === 'forming' && (
+                    <button
+                      onClick={handleCompleteTeam}
+                      disabled={isCompletingTeam}
+                      style={{
+                        padding: '10px 18px',
+                        borderRadius: '10px',
+                        background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                        border: 'none',
+                        color: '#ffffff',
+                        fontWeight: 700,
+                        fontSize: '0.84rem',
+                        cursor: isCompletingTeam ? 'wait' : 'pointer',
+                        boxShadow: '0 4px 14px rgba(236, 72, 153, 0.4)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      🔒 {isCompletingTeam ? 'Completing...' : 'Mark Team Complete & Rate'}
+                    </button>
+                  )}
+
+                  {hackathon.externalUrl && (
+                    <a
+                      href={hackathon.externalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        padding: '10px 18px',
+                        borderRadius: '10px',
+                        background: 'linear-gradient(135deg, #10b981, #059669)',
+                        border: 'none',
+                        color: '#ffffff',
+                        textDecoration: 'none',
+                        fontWeight: 700,
+                        fontSize: '0.85rem',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)',
+                      }}
+                    >
+                      Complete Official Registration ↗
+                    </a>
+                  )}
+                </div>
               </div>
+
+              {completingSuccessMessage && (
+                <div
+                  style={{
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    background: 'rgba(52, 211, 153, 0.15)',
+                    border: '1px solid rgba(52, 211, 153, 0.3)',
+                    color: '#34d399',
+                    fontSize: '0.84rem',
+                    fontWeight: 600,
+                    marginBottom: '20px',
+                  }}
+                >
+                  ✓ {completingSuccessMessage}
+                </div>
+              )}
 
               {/* Members List */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
@@ -727,6 +800,24 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
                           >
                             GitHub ↗
                           </a>
+
+                          {!isMe && hackathon.myTeam?.status === 'complete' && (
+                            <button
+                              onClick={() => setRateeToRate(mUser)}
+                              style={{
+                                padding: '6px 12px',
+                                borderRadius: '8px',
+                                background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                                border: 'none',
+                                color: '#000',
+                                fontWeight: 700,
+                                fontSize: '0.74rem',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              ⭐ Rate Teammate
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -952,6 +1043,24 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
             </div>
           </div>
         </div>
+      )}
+
+      {rateeToRate && hackathon.myTeam && (
+        <RateTeammateModal
+          teamId={hackathon.myTeam.id}
+          hackathonTitle={hackathon.title}
+          ratee={rateeToRate}
+          onClose={() => setRateeToRate(null)}
+          onSuccess={async () => {
+            setRateeToRate(null);
+            setCompletingSuccessMessage('Peer rating submitted! Commitment score updated live.');
+            const freshRes = await fetch(`/api/hackathons/${hackathon.id}`);
+            if (freshRes.ok) {
+              const freshData: HackathonDetail = await freshRes.json();
+              setHackathon(freshData);
+            }
+          }}
+        />
       )}
     </div>
   );

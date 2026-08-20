@@ -305,10 +305,35 @@ export interface CandidateMatchResult {
   teamCharter: TeamCharter;
 }
 
+export interface TeamMemberUser {
+  id: string;
+  username: string;
+  name: string | null;
+  avatarUrl: string | null;
+}
+
+export interface TeamMemberRecord {
+  teamId: string;
+  userId: string;
+  joinedAt: string;
+  user: TeamMemberUser;
+}
+
+export interface TeamRecord {
+  id: string;
+  hackathonId: string;
+  creatorId: string;
+  targetSize: number;
+  status: 'forming' | 'complete';
+  createdAt: string;
+  updatedAt: string;
+  members: TeamMemberRecord[];
+}
+
 export interface FindTeammatesResponse {
   candidates: CandidateMatchResult[];
   targetSize: number;
-  myTeam: any | null;
+  myTeam: TeamRecord | null;
 }
 
 export interface TeamInviteItem {
@@ -465,7 +490,7 @@ export interface HackathonDetail extends HackathonSummary {
   latitude: number | null;
   longitude: number | null;
   participants: ParticipantUser[];
-  myTeam?: any | null;
+  myTeam?: TeamRecord | null;
 }
 
 export interface CreateHackathonPayload {
