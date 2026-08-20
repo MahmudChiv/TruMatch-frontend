@@ -238,7 +238,9 @@ export interface NotificationDto {
   id: string;
   userId: string;
   type: string;
+  message?: string;
   payload: any;
+  read?: boolean;
   readAt: string | null;
   createdAt: string;
 }

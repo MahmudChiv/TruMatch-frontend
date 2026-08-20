@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import type { HackathonDetail, UserProfile } from '@/lib/api/types';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
@@ -47,6 +47,54 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
       console.error('Failed to toggle join:', e);
     } finally {
       setIsJoining(false);
+    }
+  };
+
+  const [pendingInvite, setPendingInvite] = useState<any | null>(null);
+  const [isResponding, setIsResponding] = useState(false);
+
+  const fetchPendingInvite = async () => {
+    try {
+      const res = await fetch(`/api/hackathons/${hackathon.id}/my-invite`);
+      if (res.ok) {
+        const data = await res.json();
+        setPendingInvite(data);
+      }
+    } catch (e) {
+      console.error('Failed to fetch pending invite:', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchPendingInvite();
+  }, [hackathon.id]);
+
+  const handleRespondToInvite = async (action: 'accept' | 'decline') => {
+    if (!pendingInvite) return;
+    setIsResponding(true);
+    try {
+      const res = await fetch(`/api/hackathons/${hackathon.id}/invites/${pendingInvite.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      });
+
+      if (res.ok) {
+        setPendingInvite(null);
+        // Refresh hackathon details
+        const freshRes = await fetch(`/api/hackathons/${hackathon.id}`);
+        if (freshRes.ok) {
+          const freshData: HackathonDetail = await freshRes.json();
+          setHackathon(freshData);
+        }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || `Failed to ${action} invite.`);
+      }
+    } catch {
+      alert(`Error responding to invite.`);
+    } finally {
+      setIsResponding(false);
     }
   };
 
@@ -274,6 +322,101 @@ export default function HackathonDetailClient({ user, initialHackathon }: Props)
                 hackathonTitle={hackathon.title}
                 onClose={() => setShowMatchingModal(false)}
               />
+            )}
+
+            {/* Pending Team Invite & Charter Banner */}
+            {pendingInvite && (
+              <div
+                style={{
+                  marginTop: '24px',
+                  background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(192, 132, 252, 0.08) 100%)',
+                  border: '1px solid rgba(168, 85, 247, 0.35)',
+                  borderRadius: '16px',
+                  padding: '20px 24px',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span style={{ fontSize: '1.5rem' }}>🤝</span>
+                    <div>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.05em', color: '#c084fc', textTransform: 'uppercase' }}>
+                        Pending Team Invite Received
+                      </span>
+                      <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: '2px 0 0', color: 'var(--text-primary)' }}>
+                        {pendingInvite.fromUser?.name || pendingInvite.fromUser?.username} invited you to join their team!
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <button
+                      onClick={() => handleRespondToInvite('accept')}
+                      disabled={isResponding}
+                      style={{
+                        padding: '9px 18px',
+                        borderRadius: '10px',
+                        background: '#34d399',
+                        border: 'none',
+                        color: '#000000',
+                        fontWeight: 700,
+                        fontSize: '0.84rem',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {isResponding ? 'Joining…' : '✓ Accept Team Charter & Join'}
+                    </button>
+                    <button
+                      onClick={() => handleRespondToInvite('decline')}
+                      disabled={isResponding}
+                      style={{
+                        padding: '9px 18px',
+                        borderRadius: '10px',
+                        background: 'rgba(255,255,255,0.08)',
+                        border: '1px solid var(--border)',
+                        color: 'var(--text-secondary)',
+                        fontWeight: 600,
+                        fontSize: '0.84rem',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Decline
+                    </button>
+                  </div>
+                </div>
+
+                {/* Team Charter Details */}
+                {pendingInvite.charterJson && (
+                  <div
+                    style={{
+                      marginTop: '16px',
+                      paddingTop: '16px',
+                      borderTop: '1px solid rgba(255,255,255,0.1)',
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                      gap: '12px',
+                      fontSize: '0.82rem',
+                    }}
+                  >
+                    <div>
+                      <span style={{ color: '#c084fc', fontWeight: 700, display: 'block' }}>🎯 Vision Statement</span>
+                      <span style={{ color: 'var(--text-secondary)' }}>{pendingInvite.charterJson.visionStatement}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: '#c084fc', fontWeight: 700, display: 'block' }}>🤝 Role Complementarity</span>
+                      <span style={{ color: 'var(--text-secondary)' }}>{pendingInvite.charterJson.roleComplementarity}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: '#c084fc', fontWeight: 700, display: 'block' }}>⏰ Availability Agreement</span>
+                      <span style={{ color: 'var(--text-secondary)' }}>{pendingInvite.charterJson.availabilityAgreement}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: '#c084fc', fontWeight: 700, display: 'block' }}>💬 Communication Protocol</span>
+                      <span style={{ color: 'var(--text-secondary)' }}>{pendingInvite.charterJson.communicationProtocol}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
 
             {/* Event Overview / Description */}
