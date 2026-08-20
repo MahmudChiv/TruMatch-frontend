@@ -53,7 +53,20 @@ export interface RepoSignals {
   totalCommits: number;
 }
 
-// ─── Interview WebSocket events ───────────────────────────────────────────────
+export interface TranscriptEntry {
+  role: 'assistant' | 'user';
+  content: string;
+  timestamp: string;
+}
+
+/** Server → Client: response to interview:resume with active transcript */
+export interface InterviewResumeResponseEvent {
+  resumed: boolean;
+  sessionId: string;
+  transcript: TranscriptEntry[];
+  preInterviewWarning: string;
+  isFinished?: boolean;
+}
 
 /** Server → Client: response to interview:start with pre-interview warning */
 export interface InterviewStartResponseEvent {

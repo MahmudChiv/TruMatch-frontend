@@ -8,6 +8,7 @@ import type {
   InterviewMessageCompleteEvent,
   InterviewCompleteEvent,
   InterviewErrorEvent,
+  InterviewResumeResponseEvent,
   UserProfile,
 } from '@/lib/api/types';
 
@@ -33,6 +34,8 @@ export default function InterviewPage() {
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [isAiTyping, setIsAiTyping] = useState(false);
   const [errorReason, setErrorReason] = useState<string | null>(null);
+  const [isDisconnected, setIsDisconnected] = useState(false);
+  const [isReconnecting, setIsReconnecting] = useState(false);
 
   // Final outcome state
   const [finalResult, setFinalResult] = useState<InterviewCompleteEvent | null>(null);
@@ -112,6 +115,30 @@ export default function InterviewPage() {
 
     socket.on('connect', () => {
       socket.emit('join-room', { userId: user.id });
+    });
+
+    socket.on('disconnect', () => {
+      setIsDisconnected(true);
+      setIsAiTyping(false);
+    });
+
+    socket.on('interview:resumed', (data: InterviewResumeResponseEvent) => {
+      if (data && data.resumed) {
+        const reconstructed: ChatMessage[] = (data.transcript || []).map((entry, idx) => ({
+          id: `resumed-${idx}-${Date.now()}`,
+          role: entry.role,
+          text: entry.content,
+          isStreaming: false,
+        }));
+
+        setMessages(reconstructed);
+        if (data.sessionId) setSessionId(data.sessionId);
+        if (data.isFinished) setIsFinishedReady(true);
+        setIsDisconnected(false);
+        setIsReconnecting(false);
+        setIsAiTyping(false);
+        setTimeout(() => textareaRef.current?.focus(), 100);
+      }
     });
 
     // Handle incoming AI text chunks
@@ -218,6 +245,42 @@ export default function InterviewPage() {
         setSessionId(res.sessionId);
       }
     });
+  };
+
+  const handleReconnect = () => {
+    if (!socketRef.current || !user) return;
+    setIsReconnecting(true);
+
+    if (!socketRef.current.connected) {
+      socketRef.current.connect();
+    }
+
+    socketRef.current.emit(
+      'interview:resume',
+      { userId: user.id },
+      (res: InterviewResumeResponseEvent) => {
+        if (res && res.resumed) {
+          const reconstructed: ChatMessage[] = (res.transcript || []).map((entry, idx) => ({
+            id: `resumed-${idx}-${Date.now()}`,
+            role: entry.role,
+            text: entry.content,
+            isStreaming: false,
+          }));
+
+          setMessages(reconstructed);
+          if (res.sessionId) setSessionId(res.sessionId);
+          if (res.isFinished) setIsFinishedReady(true);
+          setIsDisconnected(false);
+          setIsReconnecting(false);
+          setIsAiTyping(false);
+          setTimeout(() => textareaRef.current?.focus(), 100);
+        } else {
+          setIsReconnecting(false);
+          setIsDisconnected(false);
+          startInterview();
+        }
+      },
+    );
   };
 
   const handleSendAnswer = () => {
@@ -482,8 +545,8 @@ export default function InterviewPage() {
           <span className="iv-brand-text">TruMatch AI Interview</span>
         </div>
         <div className="iv-header-status">
-          <span className="iv-status-dot" />
-          <span>Live Session</span>
+          <span className={`iv-status-dot ${isDisconnected ? 'iv-status-offline' : ''}`} />
+          <span>{isDisconnected ? 'Connection Lost' : 'Live Session'}</span>
         </div>
       </header>
 
@@ -514,7 +577,7 @@ export default function InterviewPage() {
             </div>
           ))}
 
-          {isAiTyping && messages[messages.length - 1]?.role !== 'assistant' && (
+          {isAiTyping && !isDisconnected && messages[messages.length - 1]?.role !== 'assistant' && (
             <div className="iv-msg-row iv-msg-ai">
               <div className="iv-avatar iv-avatar-ai">
                 <span>AI</span>
@@ -529,9 +592,33 @@ export default function InterviewPage() {
         </div>
       </main>
 
-      {/* Input Bar / Finish Button */}
+      {/* Input Bar / Reconnect Banner / Finish Button */}
       <footer className="iv-chat-footer">
-        {isFinishedReady ? (
+        {isDisconnected ? (
+          <div className="iv-disconnect-banner">
+            <div className="iv-disconnect-info">
+              <span className="iv-disconnect-icon" aria-hidden="true">⚠</span>
+              <div>
+                <p className="iv-disconnect-title">Connection lost</p>
+                <p className="iv-disconnect-sub">Your session is preserved. Click Reconnect to resume where you left off.</p>
+              </div>
+            </div>
+            <button
+              className="iv-reconnect-btn"
+              onClick={handleReconnect}
+              disabled={isReconnecting}
+            >
+              {isReconnecting ? (
+                <span className="iv-btn-loading">
+                  <span className="iv-spinner-inline" />
+                  Reconnecting...
+                </span>
+              ) : (
+                'Reconnect'
+              )}
+            </button>
+          </div>
+        ) : isFinishedReady ? (
           <div className="iv-finished-container">
             <button
               className="iv-btn-primary iv-finish-btn"
@@ -776,6 +863,65 @@ const styles = `
     border-radius: 50%;
     background: #34d399;
     box-shadow: 0 0 8px #34d399;
+  }
+  .iv-status-offline {
+    background: #f87171 !important;
+    box-shadow: 0 0 8px #f87171 !important;
+  }
+
+  /* Disconnect banner & Reconnect button */
+  .iv-disconnect-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: linear-gradient(180deg, #18111e 0%, #130d19 100%);
+    border: 1px solid rgba(248, 113, 113, 0.35);
+    border-radius: 1.25rem;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .iv-disconnect-info {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .iv-disconnect-icon {
+    font-size: 1.25rem;
+    color: #f87171;
+  }
+  .iv-disconnect-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary, #f2f2f2);
+  }
+  .iv-disconnect-sub {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #a0a0a0);
+    margin-top: 2px;
+  }
+  .iv-reconnect-btn {
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
+    padding: 0.65rem 1.4rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .iv-reconnect-btn:hover {
+    background: rgba(255,255,255,0.18);
+    border-color: rgba(255,255,255,0.35);
+    transform: translateY(-1px);
+  }
+  .iv-reconnect-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
   }
 
   /* Chat Body */
