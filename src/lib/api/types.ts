@@ -195,7 +195,40 @@ export interface DashboardData {
   interviewSession: InterviewSessionData | null;
 }
 
-// ─── Public profile types ─────────────────────────────────────────────────────
+export interface AnonymousCommentDto {
+  id: string;
+  teamId: string;
+  comment: string;
+  deliveredScore: number;
+  communicationScore: number;
+  wouldWorkAgain: boolean;
+  createdAt: string;
+}
+
+export interface PublicPeerRatingSummaryDto {
+  peerRatingScore: number | null;
+  distinctTeamsRated: number;
+  appliedPeerWeight: number;
+  comments: AnonymousCommentDto[];
+}
+
+export interface CreateRatingDto {
+  teamId: string;
+  rateeId: string;
+  deliveredScore: number;
+  communicationScore: number;
+  wouldWorkAgain: boolean;
+  comment?: string;
+}
+
+export interface NotificationDto {
+  id: string;
+  userId: string;
+  type: string;
+  payload: any;
+  readAt: string | null;
+  createdAt: string;
+}
 
 export interface PublicProfile {
   username: string;
@@ -210,13 +243,16 @@ export interface PublicProfile {
     score: number;
     githubScore: number;
     interviewScore: number;
+    peerRatingScore: number | null;
     appliedGithubWeight: number;
     appliedInterviewWeight: number;
+    appliedPeerWeight: number;
+    distinctTeamsRated: number;
     scoreExplanationSummary: string | null;
   } | null;
   githubConfidence: GithubConfidenceTier;
   githubConfidenceLabel: string;
-  peerRating: null; // Placeholder for future Rating module
+  peerRating: PublicPeerRatingSummaryDto | null;
 }
 
 export interface UpdateProfileDto {
