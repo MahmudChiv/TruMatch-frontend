@@ -26,8 +26,9 @@
   --accent-dim: #404040;
 
   /* ── Fonts ── */
-  --font-hand: 'Edu VIC WA NT Hand', cursive;
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-hand: var(--font-montserrat), 'Montserrat', sans-serif;
+  --font-sans: var(--font-montserrat), 'Montserrat', ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
@@ -60,6 +61,10 @@ html[data-theme="light"] {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 html,

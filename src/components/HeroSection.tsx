@@ -74,7 +74,7 @@ function AnimatedHeadline() {
         textAlign: 'center',
         maxWidth: '860px',
         margin: '0 auto',
-        fontFamily: 'var(--font-edu-hand), cursive',
+        fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
       }}
     >
       {rendered}
@@ -128,7 +128,7 @@ function AnimatedSubtitle({ delay }: { delay: number }) {
         opacity: visible ? 1 : 0,
         transition: 'opacity 0.5s ease',
         minHeight: 'auto',
-        fontFamily: 'var(--font-edu-hand), cursive',
+        fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
       }}
     >
       {displayed}
@@ -161,7 +161,7 @@ function MockAppScreen() {
             color: i === 2 ? '#c084fc' : 'rgba(200,196,190,0.45)',
             fontSize: '0.78rem',
             fontWeight: i === 2 ? 600 : 400,
-            fontFamily: 'var(--font-edu-hand), cursive',
+            fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
           }}>
             {item}
           </div>
@@ -170,7 +170,7 @@ function MockAppScreen() {
 
       {/* Main area */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#f0ece4', fontFamily: 'var(--font-edu-hand), cursive' }}>
+        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#f0ece4', fontFamily: 'var(--font-montserrat), Montserrat, sans-serif' }}>
           Find Teammates
         </div>
         <div style={{ display: 'flex', gap: '14px', flex: 1 }}>
@@ -182,11 +182,11 @@ function MockAppScreen() {
             padding: '14px',
             flex: '0 0 130px',
           }}>
-            <div style={{ fontSize: '0.6rem', color: 'rgba(200,196,190,0.5)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-edu-hand), cursive' }}>
+            <div style={{ fontSize: '0.6rem', color: 'rgba(200,196,190,0.5)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-montserrat), Montserrat, sans-serif' }}>
               Your Commitment
             </div>
-            <div style={{ fontSize: '2rem', fontWeight: 800, color: '#84cc16', fontFamily: 'var(--font-edu-hand), cursive' }}>87</div>
-            <div style={{ fontSize: '0.6rem', color: 'rgba(200,196,190,0.4)', fontFamily: 'var(--font-edu-hand), cursive' }}>/ 100</div>
+            <div style={{ fontSize: '2rem', fontWeight: 800, color: '#84cc16', fontFamily: 'var(--font-montserrat), Montserrat, sans-serif' }}>87</div>
+            <div style={{ fontSize: '0.6rem', color: 'rgba(200,196,190,0.4)', fontFamily: 'var(--font-montserrat), Montserrat, sans-serif' }}>/ 100</div>
             <div style={{ marginTop: '10px', height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '2px', overflow: 'hidden' }}>
               <div style={{ width: '87%', height: '100%', background: 'linear-gradient(90deg, #84cc16, #a855f7)', borderRadius: '2px' }} />
             </div>
@@ -211,15 +211,15 @@ function MockAppScreen() {
                   border: `1px solid ${c.color}55`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '0.6rem', fontWeight: 700, color: c.color,
-                  fontFamily: 'var(--font-edu-hand), cursive',
+                  fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
                 }}>
                   {c.name.slice(0, 2)}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#f0ece4', fontFamily: 'var(--font-edu-hand), cursive' }}>{c.name}</div>
-                  <div style={{ fontSize: '0.62rem', color: 'rgba(200,196,190,0.45)', fontFamily: 'var(--font-edu-hand), cursive' }}>{c.skill}</div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#f0ece4', fontFamily: 'var(--font-montserrat), Montserrat, sans-serif' }}>{c.name}</div>
+                  <div style={{ fontSize: '0.62rem', color: 'rgba(200,196,190,0.45)', fontFamily: 'var(--font-montserrat), Montserrat, sans-serif' }}>{c.skill}</div>
                 </div>
-                <div style={{ fontSize: '0.88rem', fontWeight: 700, color: c.color, fontFamily: 'var(--font-edu-hand), cursive' }}>{c.score}</div>
+                <div style={{ fontSize: '0.88rem', fontWeight: 700, color: c.color, fontFamily: 'var(--font-montserrat), Montserrat, sans-serif' }}>{c.score}</div>
               </div>
             ))}
           </div>
@@ -297,7 +297,7 @@ function DemoVideo() {
             fontWeight: 600,
             letterSpacing: '0.05em',
             textTransform: 'uppercase',
-            fontFamily: 'var(--font-edu-hand), cursive',
+            fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
           }}>
             Watch Demo · 2 min
           </span>
@@ -313,7 +313,7 @@ function DemoVideo() {
             background: 'rgba(10,10,10,0.7)',
             borderRadius: '10px', padding: '10px 20px',
             color: '#34d399', fontSize: '0.85rem', fontWeight: 500,
-            fontFamily: 'var(--font-edu-hand), cursive',
+            fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
           }}>
             ▶ Playing demo…
           </div>
@@ -354,7 +354,7 @@ export default function HeroSection() {
         justifyContent: 'center',
         padding: '120px 24px 80px',
         gap: '52px',
-        fontFamily: 'var(--font-edu-hand), cursive',
+        fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
       }}
     >
       <style>{`
@@ -375,7 +375,7 @@ export default function HeroSection() {
           fontSize: '0.8rem', fontWeight: 600, color: '#c084fc',
           letterSpacing: '0.05em',
           animation: 'fadeUp 0.6s ease both',
-          fontFamily: 'var(--font-edu-hand), cursive',
+          fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
         }}>
           <span style={{
             width: 7, height: 7, borderRadius: '50%',
@@ -383,7 +383,7 @@ export default function HeroSection() {
             display: 'inline-block',
             boxShadow: '0 0 8px #84cc16',
           }} />
-          AI-Powered Commitment Verification
+          AI-Powered Commitment Verification & Team Matching
         </div>
 
         <AnimatedHeadline />
@@ -405,7 +405,7 @@ export default function HeroSection() {
               transition: 'transform 0.2s, opacity 0.2s, box-shadow 0.2s',
               boxShadow: '0 0 28px rgba(168,85,247,0.28)',
               display: 'flex', alignItems: 'center', gap: '8px',
-              fontFamily: 'var(--font-edu-hand), cursive',
+              fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
             }}
             onMouseEnter={e => {
               const a = e.currentTarget as HTMLAnchorElement;
@@ -433,7 +433,7 @@ export default function HeroSection() {
               fontWeight: 600, fontSize: '0.95rem',
               padding: '14px 28px', borderRadius: '12px',
               transition: 'background 0.2s, border-color 0.2s',
-              fontFamily: 'var(--font-edu-hand), cursive',
+              fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
             }}
             onMouseEnter={e => {
               const a = e.currentTarget as HTMLAnchorElement;
@@ -455,7 +455,7 @@ export default function HeroSection() {
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '12px 20px',
           fontSize: '0.8rem', color: 'rgba(200,196,190,0.45)',
           animation: 'fadeUp 0.6s ease both', animationDelay: '0.6s',
-          fontFamily: 'var(--font-edu-hand), cursive',
+          fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
         }}>
           <span>✦ Free during beta</span>
           <span style={{ width: 1, height: 14, background: 'rgba(255,255,255,0.1)', display: 'inline-block' }} />

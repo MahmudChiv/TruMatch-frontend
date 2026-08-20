@@ -600,7 +600,7 @@ const styles = `
     justify-content: center;
     position: relative;
     overflow: hidden;
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
   }
 
   .iv-chat-layout {
@@ -645,7 +645,7 @@ const styles = `
   }
   .iv-logo { display: block; opacity: 0.85; }
   .iv-brand-text {
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
     font-weight: 700;
     font-size: 1.05rem;
     color: var(--text-primary, #f2f2f2);
@@ -724,7 +724,7 @@ const styles = `
 
   /* Buttons — landing page button properties */
   .iv-btn-primary {
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -906,7 +906,7 @@ const styles = `
     border: none;
     outline: none;
     color: var(--text-primary, #f2f2f2);
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
     font-size: 0.95rem;
     resize: none;
     max-height: 120px;

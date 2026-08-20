@@ -37,7 +37,7 @@ function buildTooltipHTML(dev: DevPoint): string {
 
   return `
     <div style="
-      font-family:'Edu VIC WA NT Hand',cursive;
+      font-family: var(--font-montserrat), 'Montserrat', sans-serif;
       background:rgba(10,10,14,0.97);
       border:1px solid ${dev.color}55;
       border-radius:14px;

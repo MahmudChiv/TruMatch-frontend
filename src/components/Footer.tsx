@@ -5,7 +5,7 @@ import { useState } from 'react';
 /* ─────────────────────────────────────────────────────────────
    Constants & data
 ───────────────────────────────────────────────────────────── */
-const FONT = "'Edu VIC WA NT Hand', cursive";
+const FONT = "var(--font-montserrat), Montserrat, sans-serif";
 const TAGLINE = 'AI-powered commitment verification for developer teams.';
 
 /* Navigation columns */

@@ -14,7 +14,7 @@ export default function DashboardLoading() {
           align-items: center;
           justify-content: center;
           gap: 1rem;
-          font-family: var(--font-edu-hand), cursive;
+          font-family: var(--font-montserrat), Montserrat, sans-serif;
         }
         .dash-loading-spinner {
           width: 28px;

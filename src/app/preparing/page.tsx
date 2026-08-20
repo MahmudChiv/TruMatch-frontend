@@ -291,7 +291,7 @@ const styles = `
     justify-content: center;
     position: relative;
     overflow: hidden;
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
   }
 
   /* ── Animated grid — same as used across the landing page ── */
@@ -355,7 +355,7 @@ const styles = `
     opacity: 0.85;
   }
   .prep-brand-text {
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
     font-weight: 700;
     font-size: 1.05rem;
     letter-spacing: -0.01em;
@@ -390,7 +390,7 @@ const styles = `
 
   /* ── Headline ── */
   .prep-headline {
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
     font-size: clamp(1.65rem, 5vw, 2.85rem);
     font-weight: 700;
     letter-spacing: -0.03em;
@@ -414,7 +414,7 @@ const styles = `
 
   /* ── Sub copy ── */
   .prep-sub {
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
     font-size: clamp(0.8rem, 2vw, 0.975rem);
     color: var(--text-secondary, #a0a0a0);
     font-weight: 400;
@@ -498,7 +498,7 @@ const styles = `
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
     font-size: 0.77rem;
     color: var(--text-muted, #525252);
     letter-spacing: 0.05em;
@@ -518,7 +518,7 @@ const styles = `
     to { transform: rotate(360deg); }
   }
   .prep-status {
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
   }
 
   /* ── Error card ── */
@@ -541,19 +541,19 @@ const styles = `
     color: var(--text-secondary, #a0a0a0);
   }
   .prep-error-title {
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--text-primary, #f2f2f2);
   }
   .prep-error-body {
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
     font-size: 0.9rem;
     color: var(--text-secondary, #a0a0a0);
     line-height: 1.6;
   }
   .prep-retry-btn {
-    font-family: var(--font-edu-hand), cursive;
+    font-family: var(--font-montserrat), Montserrat, sans-serif;
     margin-top: 0.4rem;
     padding: 0.6rem 1.6rem;
     border-radius: 0.7rem;

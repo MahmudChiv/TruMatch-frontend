@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
-const FONT = "'Edu VIC WA NT Hand', cursive";
+const FONT = "var(--font-montserrat), Montserrat, sans-serif";
 
 /* ────────────────────────────────────────────────────────────────
    DATA

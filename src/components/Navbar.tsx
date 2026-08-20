@@ -6,9 +6,9 @@ import Image from 'next/image';
 interface NavItem { label: string; href: string; }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Features',     href: '#features' },
-  { label: 'Scoring',      href: '#scoring' },
+  { label: 'Hero',    href: '#hero' },
+  { label: 'Why',     href: '#why-trumatch' },
+  { label: 'Connect', href: '#connect' },
 ];
 
 export default function Navbar() {
@@ -20,6 +20,19 @@ export default function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      setMobileMenuOpen(false);
+      const targetId = href.slice(1);
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+        window.history.pushState(null, '', href);
+      }
+    }
+  };
 
   return (
     <header
@@ -54,7 +67,7 @@ export default function Navbar() {
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: '24px',
-          fontFamily: 'var(--font-edu-hand), cursive',
+          fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
         }}
       >
         {/* ── Logo ── */}
@@ -81,6 +94,7 @@ export default function Navbar() {
             <li key={item.label}>
               <a
                 href={item.href}
+                onClick={e => handleNavClick(e, item.href)}
                 style={{
                   color: 'rgba(240,236,228,0.6)',
                   textDecoration: 'none',
@@ -90,7 +104,7 @@ export default function Navbar() {
                   borderRadius: '8px',
                   transition: 'color 0.2s, background 0.2s',
                   display: 'block',
-                  fontFamily: 'var(--font-edu-hand), cursive',
+                  fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
                 }}
                 onMouseEnter={e => {
                   const a = e.currentTarget as HTMLAnchorElement;
@@ -120,7 +134,7 @@ export default function Navbar() {
               fontWeight: 500,
               padding: '8px 16px',
               transition: 'color 0.2s',
-              fontFamily: 'var(--font-edu-hand), cursive',
+              fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
             }}
             onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#f0ece4')}
             onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(240,236,228,0.65)')}
@@ -139,7 +153,7 @@ export default function Navbar() {
               borderRadius: '10px',
               transition: 'opacity 0.2s, transform 0.2s, box-shadow 0.2s',
               whiteSpace: 'nowrap',
-              fontFamily: 'var(--font-edu-hand), cursive',
+              fontFamily: 'var(--font-montserrat), Montserrat, sans-serif',
             }}
             onMouseEnter={e => {
               const a = e.currentTarget as HTMLAnchorElement;
@@ -210,7 +224,7 @@ export default function Navbar() {
               <li key={item.label}>
                 <a
                   href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={e => handleNavClick(e, item.href)}
                   style={{
                     color: '#f0ece4',
                     textDecoration: 'none',

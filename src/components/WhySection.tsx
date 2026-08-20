@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import HowItWorks, { Step } from '@/components/ui/how-it-works';
 
-
-const FONT = "'Edu VIC WA NT Hand', cursive";
+const FONT = "var(--font-montserrat), Montserrat, sans-serif";
 
 /* ── Intersection observer hook for scroll-triggered reveal ── */
 function useInView(threshold = 0.15) {
@@ -78,36 +78,36 @@ const PAIN_POINTS = [
   },
 ];
 
-const HOW_STEPS = [
+const HOW_STEPS: Step[] = [
   {
-    num: '01',
     title: 'GitHub as ground truth',
-    body: 'We pull your real activity — commit streaks, PR completion rates, issue close ratios — and convert them into numeric commitment signals. No vibes, no self-reporting.',
+    description: 'We pull your real activity — commit streaks, PR completion rates, issue close ratios — and convert them into numeric commitment signals. No vibes, no self-reporting.',
+    colorTheme: 'emerald',
   },
   {
-    num: '02',
     title: 'AI interview with context',
-    body: 'Gemini reads your GitHub data and asks questions tailored to your patterns. If your streak shows late-night pushes before deadlines, we ask about that. Context-aware, not generic.',
+    description: 'Gemini reads your GitHub data and asks questions tailored to your patterns. If your streak shows late-night pushes before deadlines, we ask about that. Context-aware, not generic.',
+    colorTheme: 'indigo',
   },
   {
-    num: '03',
     title: 'A transparent Commitment Score',
-    body: 'Every sub-score is visible: consistency, PR velocity, issue follow-through. You see exactly how your 78 was calculated — no black box.',
+    description: 'Every sub-score is visible: consistency, PR velocity, issue follow-through. You see exactly how your score was calculated — no black box.',
+    colorTheme: 'purple',
   },
   {
-    num: '04',
     title: 'Matched by commitment level',
-    body: 'High-scorers get paired with high-scorers. Casual participants find like-minded teams. Expectations align before the clock starts.',
+    description: 'High-scorers get paired with high-scorers. Casual participants find like-minded teams. Expectations align before the clock starts.',
+    colorTheme: 'emerald',
   },
   {
-    num: '05',
     title: 'AI-generated Team Charter',
-    body: 'Before work starts, our AI drafts a custom charter: working hours, decision rights, scope limits, drop-out protocol. Everyone signs. Expectations are explicit.',
+    description: 'Before work starts, our AI drafts a custom charter: working hours, decision rights, scope limits, drop-out protocol. Everyone signs. Expectations are explicit.',
+    colorTheme: 'indigo',
   },
   {
-    num: '06',
     title: 'Peer ratings close the loop',
-    body: 'And yes! The best part... After the project, teammates rate each other. Ratings feed back into the Commitment Score. Consistent delivery gets rewarded over time.',
+    description: 'And yes! The best part... After the project, teammates rate each other. Ratings feed back into the Commitment Score. Consistent delivery gets rewarded over time.',
+    colorTheme: 'purple',
   },
 ];
 
@@ -195,82 +195,6 @@ function PainCard({
   );
 }
 
-function StepRow({
-  num,
-  title,
-  body,
-  index,
-}: {
-  num: string;
-  title: string;
-  body: string;
-  index: number;
-}) {
-  const { ref, inView } = useInView(0.1);
-  const isEven = index % 2 === 0;
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        display: 'flex',
-        gap: '32px',
-        alignItems: 'flex-start',
-        opacity: inView ? 1 : 0,
-        transform: inView ? 'none' : (isEven ? 'translateX(-28px)' : 'translateX(28px)'),
-        transition: `opacity 0.65s ease ${index * 0.08}s, transform 0.65s ease ${index * 0.08}s`,
-      }}
-    >
-      {/* Number column */}
-      <div
-        style={{
-          flexShrink: 0,
-          width: '52px',
-          height: '52px',
-          borderRadius: '12px',
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.09)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '0.75rem',
-          fontWeight: 800,
-          color: '#555',
-          letterSpacing: '0.04em',
-          fontFamily: FONT,
-        }}
-      >
-        {num}
-      </div>
-
-      {/* Content */}
-      <div style={{ flex: 1, paddingTop: '10px' }}>
-        <h3
-          style={{
-            fontSize: '1.05rem',
-            fontWeight: 700,
-            color: '#e0e0e0',
-            marginBottom: '8px',
-            fontFamily: FONT,
-          }}
-        >
-          {title}
-        </h3>
-        <p
-          style={{
-            fontSize: '0.9rem',
-            color: '#666',
-            lineHeight: 1.75,
-            fontFamily: FONT,
-          }}
-        >
-          {body}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 /* ─────────────────────────────────────────────────────────────
    STAT STRIP
 ───────────────────────────────────────────────────────────── */
@@ -278,9 +202,9 @@ function StatStrip() {
   const { ref, inView } = useInView(0.2);
   const stats = [
     { value: '67%', label: 'of hackathon teams lose a member mid-project' },
-    { value: 'Startups', label: 'struggle to keep up with targets' },
-    { value: '3×',  label: 'more likely to ship if commitment levels match' },
-    { value: '0',   label: 'self-reported data used in TruMatch scoring' },
+    { value: 'Startups', label: 'Over 65% of high potential startups fail due to conflict among co-founders' },
+    { value: '3×', label: 'more likely to ship if commitment levels match' },
+    { value: '0', label: 'self-reported data used in TruMatch scoring' },
   ];
 
   return (
@@ -365,15 +289,13 @@ export default function WhySection() {
       style={{
         width: '100%',
         overflow: 'hidden',
-        /* Distinct purple-tinted dark background */
-        background: 'linear-gradient(180deg, #0c0810 0%, #0b0810 50%, #0a070e 100%)',
-        borderTop:    '1px solid rgba(168,85,247,0.08)',
-        borderBottom: '1px solid rgba(168,85,247,0.06)',
+        background: '#000000',
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
         padding: '100px 0',
         fontFamily: FONT,
       }}
     >
-      {/* Inner max-width wrapper */}
       <div style={{
         maxWidth: '1200px',
         width: '100%',
@@ -383,211 +305,198 @@ export default function WhySection() {
         flexDirection: 'column',
         gap: '90px',
       }}>
-      <style>{`
+        <style>{`
         @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
         @media (max-width: 900px) {
           .stat-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .pain-grid { grid-template-columns: 1fr !important; }
-          .how-steps-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
         }
         @media (max-width: 580px) {
           .stat-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
 
-      {/* ── BLOCK 1: The Problem ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '44px', width: '100%', alignItems: 'center' }}>
-        <Reveal>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '800px', textAlign: 'center', alignItems: 'center' }}>
-            <SectionLabel>The Problem</SectionLabel>
-            <h2
-              style={{
-                fontSize: 'clamp(1.9rem, 4vw, 3rem)',
-                fontWeight: 700,
-                color: '#f2f2f2',
-                lineHeight: 1.18,
-                letterSpacing: '-0.01em',
-                fontFamily: FONT,
-              }}
-            >
-              Hackathon | Startup teams fail before<br />
-              <span style={{ color: '#666666' }}>the first commit lands.</span>
-            </h2>
-            <p
-              style={{
-                fontSize: '1.02rem',
-                color: '#888888',
-                lineHeight: 1.8,
-                maxWidth: '680px',
-                fontFamily: FONT,
-              }}
-            >
-              Team formation in hackathons runs entirely on vibes, optimism, and LinkedIn
-              bios. There&apos;s no mechanism to verify whether someone&apos;s claimed availability
-              matches their actual behaviour — until it&apos;s too late and half your team
-              has gone silent at 2 AM.
-            </p>
-          </div>
-        </Reveal>
+        {/* ── BLOCK 1: The Problem ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '44px', width: '100%', alignItems: 'center' }}>
+          <Reveal>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '800px', textAlign: 'center', alignItems: 'center' }}>
+              <SectionLabel>The Problem</SectionLabel>
+              <h2
+                style={{
+                  fontSize: 'clamp(1.9rem, 4vw, 3rem)',
+                  fontWeight: 700,
+                  color: '#f2f2f2',
+                  lineHeight: 1.18,
+                  letterSpacing: '-0.01em',
+                  fontFamily: FONT,
+                }}
+              >
+                Hackathon | Startup teams fail before<br />
+                <span style={{ color: '#666666' }}>the first commit lands.</span>
+              </h2>
+              <p
+                style={{
+                  fontSize: '1.02rem',
+                  color: '#888888',
+                  lineHeight: 1.8,
+                  maxWidth: '680px',
+                  fontFamily: FONT,
+                }}
+              >
+                Team formation in hackathons runs entirely on vibes, optimism, and LinkedIn
+                bios. There&apos;s no mechanism to verify whether someone&apos;s claimed availability
+                matches their actual behaviour — until it&apos;s too late and half your team
+                has gone silent at 2 AM.
+              </p>
+            </div>
+          </Reveal>
 
-        {/* Pain point cards */}
-        <div
-          className="pain-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: '20px',
-            width: '100%',
-          }}
-        >
-          {PAIN_POINTS.map((p, i) => (
-            <PainCard key={i} {...p} index={i} />
-          ))}
-        </div>
-      </div>
-
-      <HR />
-
-      {/* ── BLOCK 2: Stats ── */}
-      <Reveal>
-        <StatStrip />
-      </Reveal>
-
-      <HR />
-
-      {/* ── BLOCK 3: The Solution ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '56px', width: '100%', alignItems: 'center' }}>
-        <Reveal>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '800px', textAlign: 'center', alignItems: 'center' }}>
-            <SectionLabel>How TruMatch Fixes It</SectionLabel>
-            <h2
-              style={{
-                fontSize: 'clamp(1.9rem, 4vw, 3rem)',
-                fontWeight: 700,
-                color: '#f2f2f2',
-                lineHeight: 1.18,
-                letterSpacing: '-0.01em',
-                fontFamily: FONT,
-              }}
-            >
-              Commitment verified by actions,<br />
-              <span style={{ color: '#666666' }}>not promises.</span>
-            </h2>
-            <p
-              style={{
-                fontSize: '1.02rem',
-                color: '#888888',
-                lineHeight: 1.8,
-                maxWidth: '680px',
-                fontFamily: FONT,
-              }}
-            >
-              TruMatch replaces self-reported availability with a verifiable, multi-signal
-              Commitment Score built from your GitHub record — then uses AI to turn that
-              data into a meaningful, contextual picture of how you actually behave when
-              deadlines approach.
-            </p>
-          </div>
-        </Reveal>
-
-        {/* Steps */}
-        <div
-          className="how-steps-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '40px 60px',
-            width: '100%',
-          }}
-        >
-          {HOW_STEPS.map((step, i) => (
-            <StepRow key={i} {...step} index={i} />
-          ))}
-        </div>
-      </div>
-
-      <HR />
-
-      {/* ── BLOCK 4: The contrast quote ── */}
-      <Reveal direction="up">
-        <div
-          style={{
-            background: 'rgba(255,255,255,0.025)',
-            border: '1px solid rgba(255,255,255,0.07)',
-            borderRadius: '24px',
-            padding: '52px 48px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '24px',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Large quote mark background */}
+          {/* Pain point cards */}
           <div
-            aria-hidden
+            className="pain-grid"
             style={{
-              position: 'absolute',
-              top: '-20px',
-              left: '32px',
-              fontSize: '12rem',
-              fontWeight: 900,
-              color: 'rgba(255,255,255,0.025)',
-              lineHeight: 1,
-              pointerEvents: 'none',
-              fontFamily: 'Georgia, serif',
-              userSelect: 'none',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gap: '20px',
+              width: '100%',
             }}
           >
-            "
+            {PAIN_POINTS.map((p, i) => (
+              <PainCard key={i} {...p} index={i} />
+            ))}
           </div>
+        </div>
 
-          <blockquote
+        <HR />
+
+        {/* ── BLOCK 2: Stats ── */}
+        <Reveal>
+          <StatStrip />
+        </Reveal>
+
+        <HR />
+
+        {/* ── BLOCK 3: The Solution ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '56px', width: '100%', alignItems: 'center' }}>
+          <Reveal>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '800px', textAlign: 'center', alignItems: 'center' }}>
+              <SectionLabel>How TruMatch Fixes It</SectionLabel>
+              <h2
+                style={{
+                  fontSize: 'clamp(1.9rem, 4vw, 3rem)',
+                  fontWeight: 700,
+                  color: '#f2f2f2',
+                  lineHeight: 1.18,
+                  letterSpacing: '-0.01em',
+                  fontFamily: FONT,
+                }}
+              >
+                Commitment verified by actions,<br />
+                <span style={{ color: '#666666' }}>not promises.</span>
+              </h2>
+              <p
+                style={{
+                  fontSize: '1.02rem',
+                  color: '#888888',
+                  lineHeight: 1.8,
+                  maxWidth: '680px',
+                  fontFamily: FONT,
+                }}
+              >
+                TruMatch replaces self-reported availability with a verifiable, multi-signal
+                Commitment Score built from your GitHub record — then uses AI to turn that
+                data into a meaningful, contextual picture of how you actually behave when
+                deadlines approach.
+              </p>
+            </div>
+          </Reveal>
+
+          {/* Steps — pinned card board design */}
+          <HowItWorks features={HOW_STEPS} />
+        </div>
+
+        <HR />
+
+        {/* ── BLOCK 4: The contrast quote ── */}
+        <Reveal direction="up">
+          <div
             style={{
-              fontSize: 'clamp(1.15rem, 2.5vw, 1.55rem)',
-              fontWeight: 600,
-              color: '#c8c8c8',
-              lineHeight: 1.55,
-              maxWidth: '740px',
+              background: 'rgba(255,255,255,0.025)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              borderRadius: '24px',
+              padding: '52px 48px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '24px',
               position: 'relative',
-              fontFamily: FONT,
+              overflow: 'hidden',
             }}
           >
-            The best teammates aren&apos;t the most talented — they&apos;re the ones who show up
-            consistently when it counts. TruMatch makes that visible before you commit
-            to building together.
-          </blockquote>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            {/* Large quote mark background */}
             <div
+              aria-hidden
               style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                color: '#888',
+                position: 'absolute',
+                top: '-20px',
+                left: '32px',
+                fontSize: '12rem',
+                fontWeight: 900,
+                color: 'rgba(255,255,255,0.025)',
+                lineHeight: 1,
+                pointerEvents: 'none',
+                fontFamily: 'Georgia, serif',
+                userSelect: 'none',
+              }}
+            >
+              "
+            </div>
+
+            <blockquote
+              style={{
+                fontSize: 'clamp(1.15rem, 2.5vw, 1.55rem)',
+                fontWeight: 600,
+                color: '#c8c8c8',
+                lineHeight: 1.55,
+                maxWidth: '740px',
+                position: 'relative',
                 fontFamily: FONT,
               }}
             >
-              TM
-            </div>
-            <div>
-              <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#888', fontFamily: FONT }}>
-                TruMatch Team
+              The best teammates aren&apos;t the most talented — they&apos;re the ones who show up
+              consistently when it counts. TruMatch makes that visible before you commit
+              to building together.
+            </blockquote>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: '#888',
+                  fontFamily: FONT,
+                }}
+              >
+                TM
               </div>
-              <div style={{ fontSize: '0.75rem', color: '#444', fontFamily: FONT }}>
-                Why we built this
+              <div>
+                <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#888', fontFamily: FONT }}>
+                  TruMatch Team
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#444', fontFamily: FONT }}>
+                  Why we built this
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </Reveal>
+        </Reveal>
       </div>
     </section>
   );

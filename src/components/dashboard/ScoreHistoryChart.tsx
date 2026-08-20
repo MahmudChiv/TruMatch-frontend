@@ -102,7 +102,7 @@ export default function ScoreHistoryChart({ commitmentScore, isLoading }: Props)
               <text
                 x={PAD.left - 8} y={toY(tick) + 4}
                 fill="rgba(255,255,255,0.25)" fontSize="9"
-                textAnchor="end" fontFamily="var(--font-edu-hand), cursive"
+                textAnchor="end" fontFamily="var(--font-montserrat), Montserrat, sans-serif"
               >{tick}</text>
             </g>
           ))}
@@ -133,13 +133,13 @@ export default function ScoreHistoryChart({ commitmentScore, isLoading }: Props)
                 <text
                   x={x} y={y - 14}
                   fill="#c4b5fd" fontSize="10" textAnchor="middle"
-                  fontWeight="700" fontFamily="var(--font-edu-hand), cursive"
+                  fontWeight="700" fontFamily="var(--font-montserrat), Montserrat, sans-serif"
                 >{p.score}</text>
                 {/* Date label below */}
                 <text
                   x={x} y={H - 6}
                   fill="rgba(255,255,255,0.3)" fontSize="9" textAnchor="middle"
-                  fontFamily="var(--font-edu-hand), cursive"
+                  fontFamily="var(--font-montserrat), Montserrat, sans-serif"
                 >{p.date}</text>
               </g>
             );
